@@ -1,0 +1,31 @@
+{
+  "serve": {
+    "host": "localhost",
+    "port": 8080
+  },
+
+  "packages": {
+    "exuracss": {
+      "path": "packages/exuracss",
+      "build": ["php cast build --min=true", "php cast build-clip"],
+      "budget": {
+        "dist/exura.min.css": { "gzip": "25KB" },
+        "dist/exura-clip.css": { "gzip": "12KB" }
+      }
+    },
+    "exurajs": {
+      "path": "packages/exurajs",
+      "build": ["php cast build --min=true"],
+      "budget": {
+        "dist/exura.min.js": { "gzip": "3KB" }
+      }
+    },
+    "exuraphp": {
+      "path": "packages/exuraphp",
+      "build": ["php cast build --min=true"],
+      "budget": {
+        "dist/exura.min.php": { "gzip": "3KB" }
+      }
+    }
+  }
+}

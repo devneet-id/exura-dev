@@ -1,0 +1,210 @@
+#!/usr/bin/env php
+<?php
+/**
+ * E X U R A - D E V
+ *
+ * The workbench of the Exura series. One entry for every routine:
+ *   php dev                 this screen
+ *   php dev setup           composer install in every package, npm install here
+ *   php dev serve           playground at http://localhost:8080
+ *   php dev build [pkg]     build dist/ through each package's own `cast`
+ *   php dev test [suite]    php | js | css | integration | all (default)
+ *   php dev size            dist sizes against the budget in exura-dev.json
+ *   php dev status          branch, changes and version of each package
+ *
+ * The packages stay the source of truth: this file only calls them.
+ */
+
+const ROOT = __DIR__;
+
+$config   = json_decode(file_get_contents(ROOT . '/exura-dev.json'), true);
+$packages = $config['packages'];
+
+$command = $argv[1] ?? 'help';
+$target  = $argv[2] ?? null;
+$options = array_slice($argv, 2);
+
+/* ------------------------------------------------------------------ output */
+
+function out(string $text = ''): void { echo $text, PHP_EOL; }
+function color(string $text, string $code): string {
+  return (stream_isatty(STDOUT) ? "\033[{$code}m{$text}\033[0m" : $text);
+}
+function title(string $text): void { out(color('◆ ' . $text, '1;36')); }
+function ok(string $text): void    { out(color('  ✓ ', '1;32') . $text); }
+function fail(string $text): void  { out(color('  ✗ ', '1;31') . $text); }
+function note(string $text): void  { out(color('  · ' . $text, '0;37')); }
+
+function run(string $cmd, ?string $cwd = null): int {
+  $proc = proc_open($cmd, [STDIN, STDOUT, STDERR], $pipes, $cwd);
+  return is_resource($proc) ? proc_close($proc) : 1;
+}
+
+function capture(string $cmd, ?string $cwd = null): string {
+  $proc = proc_open($cmd, [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes, $cwd);
+  if (!is_resource($proc)) return '';
+  $output = stream_get_contents($pipes[1]);
+  proc_close($proc);
+  return trim($output);
+}
+
+function pick(array $packages, ?string $name): array {
+  if ($name === null || $name === 'all') return $packages;
+  foreach ($packages as $key => $package) {
+    if ($key === $name || $key === 'exura' . $name) return [$key => $package];
+  }
+  fail("Unknown package: $name (use " . implode(' | ', array_keys($packages)) . ')');
+  exit(1);
+}
+
+function bytes(string $size): int {
+  preg_match('/^([\d.]+)\s*(B|KB|MB)?$/i', trim($size), $m);
+  return (int) round(($m[1] ?? 0) * ['B' => 1, 'KB' => 1024, 'MB' => 1048576][strtoupper($m[2] ?? 'B')]);
+}
+
+function human(int $bytes): string {
+  return $bytes >= 1024 ? round($bytes / 1024, 2) . 'KB' : $bytes . 'B';
+}
+
+function ready(array $package): bool {
+  return is_file(ROOT . '/' . $package['path'] . '/cast');
+}
+
+function needsPackages(array $packages): void {
+  foreach ($packages as $name => $package) {
+    if (!ready($package)) {
+      fail("$name is missing. Run: git submodule update --init");
+      exit(1);
+    }
+  }
+}
+
+/* ---------------------------------------------------------------- commands */
+
+$commands = [
+
+  'help' => function () {
+    title('E X U R A - D E V');
+    out('  The workbench of exuracss, exurajs and exuraphp.');
+    out();
+    $rows = [
+      'setup'            => 'composer install in every package, npm install here',
+      'serve [--port=N]' => 'playground (php -S) with the packages\' dist/',
+      'build [pkg]'      => 'build dist/ through each package\'s cast',
+      'test [suite]'     => 'php | js | css | integration | all',
+      'size'             => 'dist sizes (raw · gzip) against the budget',
+      'status'           => 'branch, changes and version of each package',
+    ];
+    foreach ($rows as $cmd => $text) {
+      out('  ' . color(str_pad("php dev $cmd", 28), '1;33') . $text);
+    }
+    out();
+  },
+
+  'setup' => function () use ($packages) {
+    needsPackages($packages);
+    title('Setup');
+    foreach ($packages as $name => $package) {
+      note("$name: composer install");
+      $code = run('composer install --no-interaction --quiet', ROOT . '/' . $package['path']);
+      $code === 0 ? ok($name) : fail($name);
+    }
+    note('npm install (playwright, for tests)');
+    run('npm install --no-audit --no-fund', ROOT) === 0 ? ok('npm') : fail('npm');
+  },
+
+  'serve' => function () use ($config, $options) {
+    $host = $config['serve']['host'];
+    $port = $config['serve']['port'];
+    foreach ($options as $option) {
+      if (preg_match('/^--port=(\d+)$/', $option, $m)) $port = (int) $m[1];
+      if (preg_match('/^--host=(.+)$/', $option, $m)) $host = $m[1];
+    }
+    title("Playground → http://$host:$port");
+    note('Ctrl+C to stop. Rebuild a package with `php dev build <pkg>` and refresh.');
+    exit(run(sprintf('%s -S %s:%d %s', escapeshellarg(PHP_BINARY), $host, $port,
+      escapeshellarg(ROOT . '/playground/router.php')), ROOT . '/playground'));
+  },
+
+  'build' => function () use ($packages, $target) {
+    $selected = pick($packages, $target);
+    needsPackages($selected);
+    $failed = 0;
+    foreach ($selected as $name => $package) {
+      title("Build $name");
+      $cwd = ROOT . '/' . $package['path'];
+      if (!is_dir("$cwd/vendor")) {
+        fail("$name has no vendor/. Run: php dev setup");
+        $failed++;
+        continue;
+      }
+      foreach ($package['build'] as $step) {
+        note($step);
+        if (run($step, $cwd) !== 0) { fail($step); $failed++; }
+      }
+    }
+    exit($failed ? 1 : 0);
+  },
+
+  'test' => function () use ($target) {
+    $suites = ['php', 'js', 'css', 'integration'];
+    $selected = ($target === null || $target === 'all') ? $suites : [$target];
+    foreach ($selected as $suite) {
+      if (!in_array($suite, $suites, true)) {
+        fail("Unknown suite: $suite (use " . implode(' | ', $suites) . ' | all)');
+        exit(1);
+      }
+    }
+    title('Test ' . implode(', ', $selected));
+    $files = array_map(fn($suite) => escapeshellarg("tests/$suite"), $selected);
+    exit(run('node --test --test-reporter=spec ' . implode(' ', $files), ROOT));
+  },
+
+  'size' => function () use ($packages) {
+    needsPackages($packages);
+    title('Size (raw · gzip / budget)');
+    $over = 0;
+    foreach ($packages as $name => $package) {
+      out('  ' . color($name, '1;37'));
+      foreach ($package['budget'] as $file => $budget) {
+        $path = ROOT . '/' . $package['path'] . '/' . $file;
+        if (!is_file($path)) { fail("$file missing"); $over++; continue; }
+        $raw  = filesize($path);
+        $gzip = strlen(gzencode(file_get_contents($path), 9));
+        $max  = bytes($budget['gzip']);
+        $line = sprintf('%-22s %10s · %-9s / %s', $file, human($raw), human($gzip), $budget['gzip']);
+        if ($gzip <= $max) {
+          ok($line);
+        } else {
+          fail($line . '  over budget');
+          $over++;
+        }
+      }
+    }
+    exit($over ? 1 : 0);
+  },
+
+  'status' => function () use ($packages) {
+    title('Status');
+    foreach ($packages as $name => $package) {
+      $cwd = ROOT . '/' . $package['path'];
+      if (!ready($package)) { fail("$name missing (git submodule update --init)"); continue; }
+      preg_match("/const VERSION = '([^']*)'/", file_get_contents("$cwd/cast"), $m);
+      $branch  = capture('git rev-parse --abbrev-ref HEAD', $cwd);
+      $commit  = capture('git log -1 --format="%h %s"', $cwd);
+      $changes = capture('git status --porcelain', $cwd);
+      $count   = $changes === '' ? 0 : count(explode("\n", $changes));
+      out('  ' . color(str_pad($name, 10), '1;37') . ' v' . ($m[1] ?? '?') . "  [$branch]  "
+        . ($count ? color("$count changed", '1;33') : color('clean', '0;32')));
+      note($commit);
+    }
+  },
+];
+
+if (!isset($commands[$command])) {
+  fail("Unknown command: $command");
+  $commands['help']();
+  exit(1);
+}
+
+$commands[$command]();
