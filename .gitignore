@@ -1,5 +1,6 @@
 /vendor/
 /.echoes/
 /node_modules/
-/playground/.data/
+/src/vessel/
+/src/.data/
 /test-results/

@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>apps · notes</title>
-  <link rel="stylesheet" href="/pkg/exuracss/exura.css">
-  <link rel="stylesheet" href="/pkg/exuracss/exura-clip.css">
+  <link rel="stylesheet" href="/vessel/exura.css">
+  <link rel="stylesheet" href="/vessel/exura-clip.css">
   <link rel="stylesheet" href="/assets/dev.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
     The three packages together:
       exuracss → every style is an attribute
       exurajs  → module notes(): state, effect, render
-      exuraphp → /api/notes (playground/api/index.php)
+      exuraphp → /api/notes (src/api/index.php)
     exurajs has no list rendering yet, so the list is built as a string and inserted raw with {{{items}}}.
   -->
   <div container size="py:3" style="max-width:40rem">
@@ -32,7 +32,7 @@
     </exura-notes>
   </div>
 
-  <script src="/pkg/exurajs/exura.js"></script>
+  <script src="/vessel/exura.js"></script>
   <script>
     Exura.module(function notes() {
       const { state, effect, render } = notes;

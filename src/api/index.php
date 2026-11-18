@@ -3,9 +3,18 @@
  * exuraphp playground — served at /api/<route> by `php cast serve`.
  * Also works behind Apache/nginx as api/index.php?/route.
  */
-require __DIR__ . '/../../packages/exuraphp/dist/exura.php';
+// exura.php as fetched by `php exura php` (EXURA_DIST in the exura runite)
+$repo = dirname(__DIR__, 2);
+preg_match("#const EXURA_DIST = '([^']*)';#", (string) @file_get_contents("$repo/exura"), $m);
+$exura = $repo . '/' . ($m[1] ?? 'src/vessel/') . 'exura.php';
+if (!is_file($exura)) {
+  http_response_code(500);
+  header('Content-Type: application/json');
+  exit(json_encode(['error' => ['message' => 'exura.php is not fetched yet (run: php exura php)']]));
+}
+require $exura;
 
-// tiny JSON file store for the notes demo (playground/.data is git-ignored)
+// tiny JSON file store for the notes demo (src/.data is git-ignored)
 function notes(?array $save = null): array {
   $dir  = getenv('EXURA_DEV_DATA') ?: dirname(__DIR__) . '/.data'; // tests point this to a temp folder
   $file = $dir . '/notes.json';

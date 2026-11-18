@@ -1,4 +1,4 @@
-// exuraphp — through the playground API (playground/api/index.php)
+// exuraphp — through the playground API (src/api/index.php)
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { startServer, api } from '../helpers/server.mjs';

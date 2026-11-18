@@ -4,11 +4,11 @@ For humans and AI agents. Knowledge of the series lives in [devneet-id/lore](htt
 
 ## Laws
 
-1. **The packages are the source of truth.** Code of exuracss / exurajs / exuraphp changes in `packages/<package>/` and is committed and PR'd in that package's repo — never copied into exura-dev.
-2. **No dependencies leak into a package.** Node, Playwright, test helpers and the playground stay here. A package ships one file per `dist/` target, with no runtime dependency and no build step for its users.
-3. **The packages stay independent.** Pages under `playground/apps/` may combine them; a package must never require another.
-4. **Test what users get.** The playground and the tests load `dist/`. After changing `src/`, rebuild (`php cast build --css|--js|--php`) before testing.
-5. **Builds go through the package's own `cast`** (Rune). `php cast build` only calls it. The workbench itself is a runite too: new routines become casts in `cast`, following the [Rune laws](https://github.com/devneet-id/lore/blob/main/realms/rune/lore/acts/4-the-beyond/laws.md) (keep the `#sentinel-*` markers, shebang on line 1).
+1. **This repo tests Exura; it does not hold it.** exuracss, exurajs and exuraphp are changed and released in their own repositories. Here they arrive only through `php exura`, into `src/vessel/` — never copied by hand, never committed.
+2. **No dependencies leak into a package.** Node, Playwright, test helpers and the playground stay here.
+3. **The packages stay independent.** Pages under `src/apps/` may combine them; a package must never require another.
+4. **Test what users get.** The playground and the tests load the fetched files of `src/vessel/`, served as `/vessel/`.
+5. **Two runites, two jobs.** `exura` fetches; `cast` is development only — `serve` and `test`. New routines become casts there, following the [Rune laws](https://github.com/devneet-id/lore/blob/main/realms/rune/lore/acts/4-the-beyond/laws.md) (shebang on line 1, keep the `#sentinel-*` markers).
 6. **A failing test is a finding, not an obstacle.** Never weaken an assertion to go green. A known package issue becomes a `todo` test with a one-line reason, and is listed under *Known issues* in the README.
 
 ## Conventions
@@ -16,7 +16,6 @@ For humans and AI agents. Knowledge of the series lives in [devneet-id/lore](htt
 - Every feature of a package gets a playground page (or a section of one) and a test that drives that page.
 - Tests use `node:test` with Playwright via `tests/helpers/` — each file starts its own `php -S` on a free port; notes are stored in a temp folder (`EXURA_DEV_DATA`).
 - Playground pages carry `data-*` hooks for the tests; they also load `/assets/dev.js` (toolbar, light/dark).
-- Size budgets live in `exura-dev.json`; raising one is a deliberate decision, mention it in the PR.
 
 ## After advancing work
 
