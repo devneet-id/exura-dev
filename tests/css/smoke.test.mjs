@@ -133,12 +133,21 @@ const contrastOfCard = (page, selector) => page.$eval(selector, (el) => {
   return (l1 + 0.05) / (l2 + 0.05);
 });
 
-// Known issue in exuracss 1.1.0: [card~="NAME:N"] always uses --color-fixed-light as text,
-// so light tints on a light page are white-on-white. Remove `todo` once exuracss balances the text color.
-test('light tints keep readable text on a light page', { todo: 'exuracss: tinted card text is always fixed-light' }, async () => {
+// Color balancing: every tint (card="NAME:N") of every color keeps readable text, on a light and a dark page.
+// 4.0 is the best two palette inks (dark #171719, light #f5f5f5) can reach on a mid-tone tint.
+// Known issue in exuracss 1.1.0: tints always used one fixed ink (contrast down to 1.0).
+// Fixed in exuracss after 1.1.0 (ink per tint, per mode) — drop `todo` once php exura fetches a release with it.
+test('every tint keeps readable text in light and dark', { todo: 'exuracss 1.1.0: fixed tint ink; fixed in the next release' }, async () => {
   const { page } = await openPage(browser, server.url + '/css/color.html');
-  for (const n of [1, 2, 3]) {
-    const ratio = await contrastOfCard(page, `[card="primary:${n}"]`);
-    assert.ok(ratio >= 4.5, `primary:${n} contrast ${ratio.toFixed(2)} < 4.5`);
+  const tints = await page.$$eval('#palette [card*=":"]', els => els.map(el => el.getAttribute('card')));
+  assert.ok(tints.length >= 70, `found ${tints.length} tints`);
+  for (const dark of [false, true]) {
+    await page.evaluate(d => d ? document.body.setAttribute('dark', '') : document.body.removeAttribute('dark'), dark);
+    const low = [];
+    for (const tint of tints) {
+      const ratio = await contrastOfCard(page, `#palette [card="${tint}"]`);
+      if (ratio < 4) low.push(`${tint} ${ratio.toFixed(2)}`);
+    }
+    assert.deepEqual(low, [], `${dark ? 'dark' : 'light'} page`);
   }
 });
