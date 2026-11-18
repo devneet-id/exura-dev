@@ -16,6 +16,10 @@ For humans and AI agents. Knowledge of the series lives in [devneet-id/lore](htt
 - `scenario/<package>-<possibility>/` is standalone: `index.html` + `index.css` (+ `index.js`, `api/index.php`). Link your own files absolutely (`/index.css`). List it in `scenario/README.md`.
 - A known package issue is listed under *Known issues* in the README, with the scenario that shows it.
 
+## Findings go to issues
+
+A bug or an idea found here is **not fixed here, and not fixed straight away in a package**. Open an issue in the package's own repository — devneet-id/exuracss, devneet-id/exurajs or devneet-id/exuraphp — with how to see it (the scenario or exploration page), what is expected, and a proposal. exura-dev itself holds no issues. The issues are worked on later, in each repository.
+
 ## After advancing work
 
 Log it in lore: `chronicle/exura/<YYMM>-<human>_claude.md` for an AI, `chronicle/exura/<YYMM>-<human>.md` for a human.
