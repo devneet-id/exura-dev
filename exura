@@ -1,0 +1,264 @@
+#!/usr/bin/env php
+<?php
+/*
+ * Act. 2 - Understanding Its Flow
+ * EXURA SERIES
+ *
+ * Fetch the Exura series (exuracss, exurajs, exuraphp) from the CDN
+ * into this website: the latest of a branch, or a tag of your choice.
+ *
+ * Run this script using:
+ *   $ php exura
+ *   $ php exura setup                              (asks where, then asks to install)
+ *   $ php exura setup --dist=src/vessel/ --tags=1.1.0 --install
+ *   $ php exura css --install --part=clip
+ *   $ php exura js --remove
+ */
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+
+/**
+ * I N V O C A T I O N
+ *
+ * Step 1 — Summon the runes:
+ * Import each module's manifest.
+ *
+ * Step 2 — Channel the energy:
+ * Initialize ether, essence, and entity.
+ *
+ * Note: Keep #sentinel markers if you're using Sentinel support.
+ */
+use Rune\Aether\Manifest as Aether;
+use Rune\Chanter\Manifest as Chanter;
+use Rune\Weaver\Manifest as Weaver;
+use Rune\Whisper\Manifest as Whisper;
+use Rune\Forger\Manifest as Forger;
+#sentinel-manifest
+
+Aether::ether()::essence()::entity();
+Chanter::ether()::essence()::entity();
+Weaver::ether()::essence()::entity();
+Whisper::ether()::essence()::entity();
+Forger::ether()::essence()::entity();
+#sentinel-awaken
+
+
+
+/**
+ * E X U R A
+ *
+ * The settings of this runite. 'php exura setup' writes them here,
+ * so the runite remembers them without .echoes.
+ *   EXURA_DIST  where the files land, relative to this folder
+ *   EXURA_TAGS  a tag (1.1.0) or a branch (1.x = the latest of 1.x)
+ *   EXURA_CDN   where the files come from
+ */
+const EXURA_DIST = 'src/vessel/';
+const EXURA_TAGS = '1.1.0';
+const EXURA_CDN = 'https://cdn.jsdelivr.net/gh/devneet-id';
+
+// every part: its repo and its files (dist/<file> in the repo)
+const EXURA_PARTS = [
+  'css'=> ['repo'=> 'exuracss', 'file'=> 'exura.css', 'clip'=> 'exura-clip.css'],
+  'js'=> ['repo'=> 'exurajs', 'file'=> 'exura.js'],
+  'php'=> ['repo'=> 'exuraphp', 'file'=> 'exura.php'],
+];
+
+// a spell with a value, or its default (a spell without a value is '1')
+function exura_spell( String $key, String $default ) {
+  $value = Chanter::spell($key);
+  return ($value === false || $value === '' || $value === '1') ? $default : trim((string) $value);
+}
+
+// one line of output: ok, fail or info
+function exura_line( String $state, String $text ) {
+  $color = ['ok'=> 'success', 'fail'=> 'danger', 'info'=> 'secondary'][$state];
+  $icon = ['ok'=> 'success', 'fail'=> 'danger', 'info'=> 'info'][$state];
+  Whisper::echo("{{color-$color}}{{icon-$icon}}{{color-end}} $text{{nl}}");
+}
+
+// the body of a url, or false (curl first, then file_get_contents)
+function exura_fetch( String $url ) {
+  if (function_exists('curl_init')) {
+    $curl = curl_init($url);
+    curl_setopt_array($curl, [
+      CURLOPT_RETURNTRANSFER=> true,
+      CURLOPT_FOLLOWLOCATION=> true,
+      CURLOPT_TIMEOUT=> 30,
+    ]);
+    $body = curl_exec($curl);
+    $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    curl_close($curl);
+    return ($code === 200 && $body !== false) ? $body : false;
+  }
+  $body = @file_get_contents($url, false, stream_context_create(['http'=> ['timeout'=> 30, 'ignore_errors'=> true]]));
+  $status = $http_response_header[0] ?? '';
+  return ($body !== false && str_contains($status, ' 200')) ? $body : false;
+}
+
+// fetch one file of a part into the dist folder
+function exura_take( String $part, String $tags, String $dist, String $key = 'file' ) {
+  $repo = EXURA_PARTS[$part]['repo'];
+  $file = EXURA_PARTS[$part][$key];
+  $cdn = rtrim(exura_spell('cdn', EXURA_CDN), '/');
+  $url = "$cdn/$repo@$tags/dist/$file";
+
+  $body = exura_fetch($url);
+  if ($body === false) {
+    exura_line('fail', "$url can not be fetched");
+    return false;
+  }
+
+  // trace the path, make what is missing, then write
+  $target = __DIR__ . '/' . $dist . $file;
+  Forger::fix(Forger::trace($target));
+  Forger::item($target, $body);
+  exura_line('ok', "$repo@$tags → $dist$file");
+  return true;
+}
+
+// remove one file of a part from the dist folder
+function exura_drop( String $part, String $dist, String $key = 'file' ) {
+  $file = EXURA_PARTS[$part][$key];
+  $target = __DIR__ . '/' . $dist . $file;
+  if (!is_file($target)) {
+    exura_line('info', "$dist$file is not installed");
+    return false;
+  }
+  Forger::clean($target);
+  exura_line('ok', "$dist$file removed");
+  return true;
+}
+
+// install (default) or remove one part: php exura css --install | --remove
+function exura_part( String $part, String $key = 'file' ) {
+  // read every spell first
+  $remove = Chanter::spell('remove') !== false;
+  if ($remove) {
+    return exura_drop($part, EXURA_DIST, $key);
+  }
+  $tags = exura_tags();
+  return $tags ? exura_take($part, $tags, EXURA_DIST, $key) : false;
+}
+
+// a tag or a branch: 1.1.0, v1.1.0, 1.x
+function exura_tags() {
+  $tags = exura_spell('tags', EXURA_TAGS);
+  if (!preg_match('#^[A-Za-z0-9._-]+$#', $tags)) {
+    exura_line('fail', "'$tags' is not a tag, e.g. --tags=1.1.0 or --tags=1.x");
+    return false;
+  }
+  return $tags;
+}
+
+
+
+/**
+ * I N C A N T A T I O N
+ *
+ * This is your working space.
+ * Use begin() and end() to define the active logic scope.
+ */
+Aether::begin();
+Chanter::begin();
+
+
+/* I · SETUP
+ * write the settings into this runite, then install css, js and php
+ * $ php exura setup
+ *   1. Where should Exura live?   (empty = the current EXURA_DIST)
+ *   2. Install Exura now? [y/n]
+ * $ php exura setup --dist=src/vessel/ --tags=1.1.0 --install
+ * [i]INFO: every spell answers its question; --tags keeps EXURA_TAGS when left out
+ *   dist/exura/  the page links the files (src/index.head.html)
+ *   src/vessel/  php cast build bundles them into dist/index.php
+ * */
+Chanter::cast(
+  arg: 'setup --dist --tags --install',
+  echo: 'Set dist and tags, then install.',
+  execute: function() {
+    // read every spell first
+    $tags = exura_tags();
+    $dist = exura_spell('dist', '');
+    $install = Chanter::spell('install') !== false;
+    if (!$tags) return;
+
+    // 1. where
+    if ($dist === '') {
+      $dist = trim((string) Whisper::call('Where should Exura live? (empty = ' . EXURA_DIST . '):')) ?: EXURA_DIST;
+    }
+    $dist = trim(str_replace('\\', '/', $dist), '/') . '/';
+    if (!preg_match('#^[A-Za-z0-9._/-]+$#', $dist) || str_contains($dist, '..')) {
+      exura_line('fail', "'$dist' is not a folder inside this website, e.g. --dist=dist/exura/");
+      return;
+    }
+
+    // the runite rewrites its own settings
+    $self = Forger::item(__FILE__);
+    $self = preg_replace("#const EXURA_DIST = '[^']*';#", "const EXURA_DIST = '$dist';", $self, 1);
+    $self = preg_replace("#const EXURA_TAGS = '[^']*';#", "const EXURA_TAGS = '$tags';", $self, 1);
+    Forger::item(__FILE__, $self);
+    exura_line('info', "EXURA_DIST = '$dist', EXURA_TAGS = '$tags'");
+
+    // 2. install
+    if (!$install) {
+      $install = strtolower(trim((string) Whisper::call('Install Exura now? [y/n]:'))) === 'y';
+    }
+    if (!$install) {
+      exura_line('info', 'Install later: php exura css, php exura js, php exura php');
+      return;
+    }
+    foreach (array_keys(EXURA_PARTS) as $part) {
+      exura_take($part, $tags, $dist);
+    }
+  }
+);
+
+
+/* II · CSS
+ * $ php exura css                            install exura.css
+ * $ php exura css --tags=1.1.0 --part=clip   install exura-clip.css, the emoji icons
+ * $ php exura css --remove                   remove exura.css (--part=clip for the clip)
+ * */
+Chanter::cast(
+  arg: 'css --install --remove --tags --part',
+  echo: 'Install or remove exura.css.',
+  execute: function() {
+    exura_part('css', Chanter::spell('part') === 'clip' ? 'clip' : 'file');
+  }
+);
+
+
+/* III · JS
+ * $ php exura js --tags=1.1.0
+ * $ php exura js --remove
+ * */
+Chanter::cast(
+  arg: 'js --install --remove --tags',
+  echo: 'Install or remove exura.js.',
+  execute: function() {
+    exura_part('js');
+  }
+);
+
+
+/* IV · PHP
+ * $ php exura php --tags=1.1.0
+ * $ php exura php --remove
+ * */
+Chanter::cast(
+  arg: 'php --install --remove --tags',
+  echo: 'Install or remove exura.php.',
+  execute: function() {
+    exura_part('php');
+  }
+);
+
+
+// Three files, one series,
+// fetched by one runite.
+
+#sentinel-codex
+Chanter::end();
+Aether::end();
