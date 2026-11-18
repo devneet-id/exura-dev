@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>app · notes</title>
+  <link rel="stylesheet" href="/core/exura.css">
+  <link rel="stylesheet" href="/core/exura-clip.css">
+  <link rel="stylesheet" href="/assets/dev.css">
+</head>
+<body>
+  <!--
+    The three packages together:
+      exuracss → every style is an attribute
+      exurajs  → module notes(): state, effect, render
+      exuraphp → /app/api/notes (app/api/index.php)
+    exurajs has no list rendering yet, so the list is built as a string and inserted raw with {{{items}}}.
+  -->
+  <div container size="py:3" style="max-width:40rem">
+    <exura-notes>
+      <div card="light" ring="b:full b:default-3" size="p:2">
+        <h1 text="h3 bold"><i clip="e:notebook"></i> Notes <span text="default h6" data-summary>{{summary}}</span></h1>
+
+        <form flex="a:middle" size="mt:1" style="gap:.5rem" onsubmit="event.preventDefault(); notes.add(this.title.value); this.title.value = ''">
+          <input name="title" type="text" placeholder="What needs doing?" autocomplete="off" style="margin:0">
+          <button button="primary" data-add>Add</button>
+        </form>
+
+        <p text="default" data-error>{{error}}</p>
+        <ul list="ring:y ring:default-3" data-list>{{{items}}}</ul>
+      </div>
+    </exura-notes>
+  </div>
+
+  <script src="/core/exura.js"></script>
+  <script>
+    Exura.module(function notes() {
+      const { state, effect, render } = notes;
+
+      const api = async (method, route = '', body) => {
+        const response = await fetch('/app/api/notes' + route, {
+          method,
+          headers: body ? { 'Content-Type': 'application/json' } : {},
+          body: body ? JSON.stringify(body) : undefined,
+        });
+        const json = await response.json();
+        if (method !== 'GET') state.set('error', json.error ? json.error.message : ''); // a reload keeps the last message
+        return json;
+      };
+
+      const load = async () => state.set('list', (await api('GET')).data || []);
+
+      notes.add    = async (title) => { await api('POST', '', { title }); await load(); };
+      notes.toggle = async (id, done) => { await api('PATCH', '/' + id, { done }); await load(); };
+      notes.edit   = async (id)    => {
+        const note = state.get('list').find(n => n.id === id);
+        const title = prompt('Edit note', note ? note.title : '');
+        if (title !== null) { await api('PATCH', '/' + id, { title }); await load(); }
+      };
+      notes.remove = async (id)    => { await api('DELETE', '/' + id); await load(); };
+
+      state.set('error', '');
+      state.set('list', []);
+
+      // derive the view state from the list
+      effect(() => {
+        const list = state.get('list');
+        const done = list.filter(n => n.done).length;
+        state.set('summary', list.length ? `${done} / ${list.length} done` : '');
+        state.set('items', list.length ? list.map(n => `
+          <li flex="a:middle" data-note="${n.id}" ${n.done ? 'data-done' : ''}>
+            <label flex="1 a:middle" style="gap:.5rem; cursor:pointer">
+              <input type="checkbox" ${n.done ? 'checked' : ''} onchange="notes.toggle(${n.id}, this.checked)">
+              <span text="${n.done ? 'default' : ''}" style="${n.done ? 'text-decoration:line-through' : ''}">${Exura.escape(n.title)}</span>
+            </label>
+            <button button="none sm" title="edit" onclick="notes.edit(${n.id})"><i clip="e:pencil"></i></button>
+            <button button="none sm" title="delete" onclick="notes.remove(${n.id})"><i clip="e:wastebasket"></i></button>
+          </li>`).join('') : '<li text="default">Nothing yet.</li>');
+      }, ['list']);
+
+      effect(() => render(), ['items', 'summary', 'error']);
+
+      load();
+    });
+    notes();
+  </script>
+  <script src="/assets/dev.js"></script>
+</body>
+</html>

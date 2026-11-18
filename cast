@@ -2,15 +2,16 @@
 <?php
 /*
  * E X U R A - D E V
- * The development runite of this workbench.
+ * The development server of this workbench.
  *
- * `php exura` fetches exuracss, exurajs and exuraphp into src/vessel/;
- * this runite serves the playground (src/) and tests those files.
+ * `php exura` fetches exuracss, exurajs and exuraphp into core/;
+ * this runite serves one folder — exploration/ or a scenario — with core/ beside it.
  *
  * Run this script using:
  *   $ php cast
- *   $ php cast serve --port=8080
- *   $ php cast test --css
+ *   $ php cast exploration
+ *   $ php cast scenario --name=exuracss-grid
+ *   $ php cast serve --path=scenario/exurajs-counter --port=9000
  */
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -51,16 +52,13 @@ Specter::ether()::essence()::entity();
  * E X U R A - D E V
  *
  * The settings of this runite.
- *   EXURA_DEV_HOST   where the playground is served
- *   EXURA_DEV_PORT   its port (--port changes it for one run)
- *   EXURA_DEV_SUITE  the test suites, one folder each in tests/
+ *   EXURA_DEV_HOST  where the folder is served
+ *   EXURA_DEV_PORT  its port (--port changes it for one run)
+ *   EXURA_DEV_CORE  what `php exura` puts in core/, and the cast that fetches each
  */
 const EXURA_DEV_HOST = 'localhost';
 const EXURA_DEV_PORT = '8080';
-const EXURA_DEV_SUITE = ['php', 'js', 'css', 'integration'];
-
-// the files the playground needs, and the `php exura` cast that fetches each
-const EXURA_DEV_VESSEL = [
+const EXURA_DEV_CORE = [
   'exura.css'=> 'php exura css',
   'exura-clip.css'=> 'php exura css --part=clip',
   'exura.js'=> 'php exura js',
@@ -94,23 +92,46 @@ function exura_dev_spell( String $key, String $default ) {
   return ($value === false || $value === '' || $value === '1') ? $default : trim((string) $value);
 }
 
-// the vessel folder: EXURA_DIST of the exura runite
-function exura_dev_vessel() {
-  preg_match("#const EXURA_DIST = '([^']*)';#", Forger::item(__DIR__ . '/exura'), $m);
-  return $m[1] ?? 'src/vessel/';
-}
-
-// every Exura file fetched? otherwise say which `php exura` cast brings it
-function exura_dev_ready() {
-  $vessel = exura_dev_vessel();
-  $ready = true;
-  foreach (EXURA_DEV_VESSEL as $file => $fetch) {
-    if (!is_file(__DIR__ . '/' . $vessel . $file)) {
-      exura_dev_line('fail', "$vessel$file is not fetched yet — run: $fetch");
-      $ready = false;
+// core/ filled? a missing file is only a warning: the pages that need it show it
+function exura_dev_core() {
+  foreach (EXURA_DEV_CORE as $file => $fetch) {
+    if (!is_file(__DIR__ . "/core/$file")) {
+      exura_dev_line('fail', "core/$file is missing — run: $fetch");
     }
   }
-  return $ready;
+}
+
+// every scenario: a folder of scenario/ with an index.html or index.php
+function exura_dev_scenarios() {
+  $list = [];
+  foreach (glob(__DIR__ . '/scenario/*', GLOB_ONLYDIR) as $dir) {
+    if (is_file("$dir/index.html") || is_file("$dir/index.php")) $list[] = basename($dir);
+  }
+  return $list;
+}
+
+// serve one folder of this repo as the site root, core/ beside it
+function exura_dev_serve( String $path ) {
+  // read every spell first
+  $port = exura_dev_spell('port', EXURA_DEV_PORT);
+  $host = exura_dev_spell('host', EXURA_DEV_HOST);
+  $public = Chanter::spell('public') !== false;
+
+  $path = trim(str_replace('\\', '/', $path), '/');
+  if ($path === '' || str_contains($path, '..') || !is_dir(__DIR__ . "/$path")) {
+    exura_dev_line('fail', "'$path' is not a folder of this repo, e.g. --path=exploration or --path=scenario/exuracss-grid");
+    return exura_dev_fail();
+  }
+
+  exura_dev_core();
+  exura_dev_line('info', "$path/ at the root, core/ as /core/");
+  Specter::devserver([
+    'host'=> $host,
+    'port'=> $port,
+    'mode'=> $public ? 'public' : 'private',
+    'path'=> __DIR__ . "/$path",
+    'file'=> __DIR__ . '/router.php',
+  ]);
 }
 
 
@@ -126,64 +147,64 @@ Chanter::begin();
 Keeper::begin();
 
 
-/* I · SERVE
- * the playground (src/) with the Exura files of src/vessel/
- * $ php cast serve
- * $ php cast serve --port=9000 --public
+/* I · EXPLORATION
+ * every component of the three packages, and a complete app
+ * $ php cast exploration
+ * $ php cast exploration --port=9000
  * */
 Chanter::cast(
-  arg: 'serve --port --host --public',
-  echo: 'Serve the playground. --port=8080 --host=localhost --public',
+  arg: 'exploration --port --host --public',
+  echo: 'Serve exploration/: every component, and the app. --port=8080',
   execute: function() {
-    // read every spell first
-    $port = exura_dev_spell('port', EXURA_DEV_PORT);
-    $host = exura_dev_spell('host', EXURA_DEV_HOST);
-    $public = Chanter::spell('public') !== false;
-    if (!exura_dev_ready()) return exura_dev_fail();
-
-    Specter::devserver([
-      'host'=> $host,
-      'port'=> $port,
-      'mode'=> $public ? 'public' : 'private',
-      'path'=> __DIR__ . '/src',
-      'file'=> __DIR__ . '/src/router.php',
-    ]);
+    exura_dev_serve('exploration');
   }
 );
 
 
-/* II · TEST
- * node:test + Playwright against the playground, one suite per folder of tests/
- * $ php cast test                   every suite
- * $ php cast test --css --js        some of them
- * [i]INFO: a failing test makes the run exit 1
+/* II · SCENARIO
+ * one possibility at a time; an error shows in the page
+ * $ php cast scenario                         list them, then ask which
+ * $ php cast scenario --name=exuracss-grid
  * */
 Chanter::cast(
-  arg: 'test --php --js --css --integration',
-  echo: 'Test the fetched Exura files. --php --js --css --integration (none = all)',
+  arg: 'scenario --name --port --host --public',
+  echo: 'Serve one scenario/. --name=exuracss-grid (none = list and ask)',
   execute: function() {
     // read every spell first
-    $suites = array_values(array_filter(EXURA_DEV_SUITE, fn($suite) => Chanter::spell($suite) !== false));
-    $suites = $suites ?: EXURA_DEV_SUITE;
-    if (!exura_dev_ready()) return exura_dev_fail();
+    $name = exura_dev_spell('name', '');
+    $list = exura_dev_scenarios();
 
-    exura_dev_line('info', 'Exura of ' . exura_dev_vessel() . ' » ' . implode(', ', $suites));
-    $files = implode(' ', array_map(fn($suite) => escapeshellarg("tests/$suite/**/*.test.mjs"), $suites));
-    $process = proc_open("node --test --test-reporter=spec $files", [STDIN, STDOUT, STDERR], $pipes, __DIR__);
-    $code = is_resource($process) ? proc_close($process) : 1;
-
-    if ($code !== 0) {
-      exura_dev_line('fail', 'Tests failed');
+    if ($name === '') {
+      foreach ($list as $i => $item) {
+        Whisper::echo('{{color-info}} [' . ($i + 1) . ']{{color-end}} ' . $item . '{{nl}}');
+      }
+      $answer = trim((string) Whisper::call('Which scenario? [number or name]:'));
+      $name = ctype_digit($answer) ? ($list[(int) $answer - 1] ?? '') : $answer;
+    }
+    if (!in_array($name, $list, true)) {
+      exura_dev_line('fail', "'$name' is not a scenario — run: php cast scenario");
       return exura_dev_fail();
     }
-    exura_dev_line('ok', 'Tests passed');
-    return true;
+    exura_dev_serve("scenario/$name");
   }
 );
 
 
-// Three files fetched by exura,
-// served and tried by cast.
+/* III · SERVE
+ * any folder of this repo
+ * $ php cast serve --path=scenario/exurajs-counter --port=9000 --public
+ * */
+Chanter::cast(
+  arg: 'serve --path --port --host --public',
+  echo: 'Serve any folder. --path=exploration --port=8080 --host=localhost --public',
+  execute: function() {
+    exura_dev_serve(exura_dev_spell('path', 'exploration'));
+  }
+);
+
+
+// Three files fetched by exura into core/,
+// served beside every folder by cast.
 
 #sentinel-codex
 Keeper::end();

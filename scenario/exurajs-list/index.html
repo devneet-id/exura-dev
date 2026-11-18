@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>exurajs-list</title>
+  <link rel="stylesheet" href="/core/exura.css">
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <header scenario>
+    <small>scenario · exurajs-list</small>
+    <h1>Rendering a list</h1>
+    <p>exurajs has no loop in templates yet: a list is built in an effect and inserted with <code>{{{items}}}</code>. Each title must still be escaped with <code>Exura.escape()</code>.</p>
+    <ul expect></ul>
+  </header>
+
+  <main>
+    <exura-todo>
+      <form flex style="gap:.5rem" onsubmit="event.preventDefault(); todo.add(this.title.value); this.title.value = ''">
+        <input name="title" type="text" placeholder="a task" style="margin:0">
+        <button button="primary">Add</button>
+      </form>
+      <p>{{summary}}</p>
+      <ul list="ring:y ring:default-3" items>{{{items}}}</ul>
+    </exura-todo>
+  </main>
+  <script src="/core/exura.js"></script>
+  <script src="/index.js"></script>
+</body>
+</html>

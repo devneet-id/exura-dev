@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>exuracss-clip</title>
+  <link rel="stylesheet" href="/core/exura.css">
+  <link rel="stylesheet" href="/core/exura-clip.css">
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <header scenario>
+    <small>scenario · exuracss-clip</small>
+    <h1>Clip icons: new and old grammar</h1>
+    <p>Emoji icons from <code>exura-clip.css</code>. The new grammar <code>e: a: ef:</code> next to the old forms marked for deprecation.</p>
+    <ul expect>
+      <li>each row shows the same icon twice: new grammar left, old grammar right</li>
+      <li>animations move; effects change the look</li>
+      <li>an empty box means the icon or the grammar is missing</li>
+    </ul>
+  </header>
+
+  <main>
+    <table table="ring:y" pairs>
+      <thead><tr><th>what</th><th>new</th><th>old (deprecated)</th></tr></thead>
+      <tbody>
+        <tr><td>icon</td><td><i clip="e:rocket"></i> <code>e:rocket</code></td><td><i clip="rocket"></i> <code>rocket</code></td></tr>
+        <tr><td>animation</td><td><i clip="e:heart a:heartbeat"></i> <code>e:heart a:heartbeat</code></td><td><i clip="heart animate:heartbeat"></i> <code>heart animate:heartbeat</code></td></tr>
+        <tr><td>animation</td><td><i clip="e:gear a:spin"></i> <code>e:gear a:spin</code></td><td><i clip="gear animate:spin"></i> <code>gear animate:spin</code></td></tr>
+        <tr><td>effect</td><td><i clip="e:star ef:ghost"></i> <code>e:star ef:ghost</code></td><td><i clip="star effect:ghost"></i> <code>star effect:ghost</code></td></tr>
+        <tr><td>effect</td><td><i clip="e:fire ef:emboss"></i> <code>e:fire ef:emboss</code></td><td><i clip="fire effect:emboss"></i> <code>fire effect:emboss</code></td></tr>
+        <tr><td>short</td><td><i clip="e:zap a:flash ef:icon"></i> <code>e:zap a:flash ef:icon</code></td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <h2 text="h6 bold" size="mt:2">sizes follow font-size</h2>
+    <p><i clip="e:sparkles" style="font-size:1rem"></i> <i clip="e:sparkles" style="font-size:2rem"></i> <i clip="e:sparkles" style="font-size:3rem"></i></p>
+  </main>
+
+</body>
+</html>

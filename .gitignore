@@ -1,6 +1,5 @@
 /vendor/
 /.echoes/
-/node_modules/
-/src/vessel/
-/src/.data/
-/test-results/
+/core/*
+!/core/README.md
+.data/

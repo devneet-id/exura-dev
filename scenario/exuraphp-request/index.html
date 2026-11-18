@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>exuraphp-request</title>
+  <link rel="stylesheet" href="/core/exura.css">
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <header scenario>
+    <small>scenario · exuraphp-request</small>
+    <h1>Reading the request</h1>
+    <p><code>Exura::method()</code> reads a JSON body, form data and the query string; <code>Exura::return()</code>, <code>state()</code>, <code>data()</code> and <code>header()</code> shape the answer.</p>
+    <ul expect></ul>
+  </header>
+
+  <main>
+    <p text="default">Every answer of <code>api/index.php</code>, in order:</p>
+    <div log></div>
+  </main>
+  <script src="/index.js"></script>
+</body>
+</html>

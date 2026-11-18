@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>exuracss-tint</title>
+  <link rel="stylesheet" href="/core/exura.css">
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <header scenario>
+    <small>scenario · exuracss-tint</small>
+    <h1>Tints stay readable</h1>
+    <p>Every <code>card="NAME:N"</code> on a light page and on a dark page. Color balancing means the text of every tint reads on both.</p>
+    <ul expect>
+      <li>every label below is readable on the light half</li>
+      <li>every label is readable on the dark half</li>
+      <li>known issue in exuracss 1.1.0: light tints carry white text (AnwarAchilles/exuracss#1)</li>
+    </ul>
+  </header>
+
+  <main>
+    <div flex="wrap" style="gap:1rem">
+      <section flex="1" half>
+        <h2 text="h5 bold">light page</h2>
+      <h3 text="h6 bold">default</h3>
+      <div tints><div card="default:1">default:1</div><div card="default:2">default:2</div><div card="default:3">default:3</div><div card="default:4">default:4</div><div card="default:5">default:5</div><div card="default:6">default:6</div><div card="default:7">default:7</div><div card="default:8">default:8</div><div card="default:9">default:9</div><div card="default:10">default:10</div></div>
+      <h3 text="h6 bold">primary</h3>
+      <div tints><div card="primary:1">primary:1</div><div card="primary:2">primary:2</div><div card="primary:3">primary:3</div><div card="primary:4">primary:4</div><div card="primary:5">primary:5</div><div card="primary:6">primary:6</div><div card="primary:7">primary:7</div><div card="primary:8">primary:8</div><div card="primary:9">primary:9</div><div card="primary:10">primary:10</div></div>
+      <h3 text="h6 bold">secondary</h3>
+      <div tints><div card="secondary:1">secondary:1</div><div card="secondary:2">secondary:2</div><div card="secondary:3">secondary:3</div><div card="secondary:4">secondary:4</div><div card="secondary:5">secondary:5</div><div card="secondary:6">secondary:6</div><div card="secondary:7">secondary:7</div><div card="secondary:8">secondary:8</div><div card="secondary:9">secondary:9</div><div card="secondary:10">secondary:10</div></div>
+      <h3 text="h6 bold">dark</h3>
+      <div tints><div card="dark:1">dark:1</div><div card="dark:2">dark:2</div><div card="dark:3">dark:3</div><div card="dark:4">dark:4</div><div card="dark:5">dark:5</div><div card="dark:6">dark:6</div><div card="dark:7">dark:7</div><div card="dark:8">dark:8</div><div card="dark:9">dark:9</div><div card="dark:10">dark:10</div></div>
+      <h3 text="h6 bold">light</h3>
+      <div tints><div card="light:1">light:1</div><div card="light:2">light:2</div><div card="light:3">light:3</div><div card="light:4">light:4</div><div card="light:5">light:5</div><div card="light:6">light:6</div><div card="light:7">light:7</div><div card="light:8">light:8</div><div card="light:9">light:9</div><div card="light:10">light:10</div></div>
+      <h3 text="h6 bold">white</h3>
+      <div tints><div card="white:1">white:1</div><div card="white:2">white:2</div><div card="white:3">white:3</div><div card="white:4">white:4</div><div card="white:5">white:5</div><div card="white:6">white:6</div><div card="white:7">white:7</div><div card="white:8">white:8</div><div card="white:9">white:9</div><div card="white:10">white:10</div></div>
+      <h3 text="h6 bold">black</h3>
+      <div tints><div card="black:1">black:1</div><div card="black:2">black:2</div><div card="black:3">black:3</div><div card="black:4">black:4</div><div card="black:5">black:5</div><div card="black:6">black:6</div><div card="black:7">black:7</div><div card="black:8">black:8</div><div card="black:9">black:9</div><div card="black:10">black:10</div></div>
+      </section>
+      <section flex="1" half dark>
+        <h2 text="h5 bold">dark page</h2>
+      <h3 text="h6 bold">default</h3>
+      <div tints><div card="default:1">default:1</div><div card="default:2">default:2</div><div card="default:3">default:3</div><div card="default:4">default:4</div><div card="default:5">default:5</div><div card="default:6">default:6</div><div card="default:7">default:7</div><div card="default:8">default:8</div><div card="default:9">default:9</div><div card="default:10">default:10</div></div>
+      <h3 text="h6 bold">primary</h3>
+      <div tints><div card="primary:1">primary:1</div><div card="primary:2">primary:2</div><div card="primary:3">primary:3</div><div card="primary:4">primary:4</div><div card="primary:5">primary:5</div><div card="primary:6">primary:6</div><div card="primary:7">primary:7</div><div card="primary:8">primary:8</div><div card="primary:9">primary:9</div><div card="primary:10">primary:10</div></div>
+      <h3 text="h6 bold">secondary</h3>
+      <div tints><div card="secondary:1">secondary:1</div><div card="secondary:2">secondary:2</div><div card="secondary:3">secondary:3</div><div card="secondary:4">secondary:4</div><div card="secondary:5">secondary:5</div><div card="secondary:6">secondary:6</div><div card="secondary:7">secondary:7</div><div card="secondary:8">secondary:8</div><div card="secondary:9">secondary:9</div><div card="secondary:10">secondary:10</div></div>
+      <h3 text="h6 bold">dark</h3>
+      <div tints><div card="dark:1">dark:1</div><div card="dark:2">dark:2</div><div card="dark:3">dark:3</div><div card="dark:4">dark:4</div><div card="dark:5">dark:5</div><div card="dark:6">dark:6</div><div card="dark:7">dark:7</div><div card="dark:8">dark:8</div><div card="dark:9">dark:9</div><div card="dark:10">dark:10</div></div>
+      <h3 text="h6 bold">light</h3>
+      <div tints><div card="light:1">light:1</div><div card="light:2">light:2</div><div card="light:3">light:3</div><div card="light:4">light:4</div><div card="light:5">light:5</div><div card="light:6">light:6</div><div card="light:7">light:7</div><div card="light:8">light:8</div><div card="light:9">light:9</div><div card="light:10">light:10</div></div>
+      <h3 text="h6 bold">white</h3>
+      <div tints><div card="white:1">white:1</div><div card="white:2">white:2</div><div card="white:3">white:3</div><div card="white:4">white:4</div><div card="white:5">white:5</div><div card="white:6">white:6</div><div card="white:7">white:7</div><div card="white:8">white:8</div><div card="white:9">white:9</div><div card="white:10">white:10</div></div>
+      <h3 text="h6 bold">black</h3>
+      <div tints><div card="black:1">black:1</div><div card="black:2">black:2</div><div card="black:3">black:3</div><div card="black:4">black:4</div><div card="black:5">black:5</div><div card="black:6">black:6</div><div card="black:7">black:7</div><div card="black:8">black:8</div><div card="black:9">black:9</div><div card="black:10">black:10</div></div>
+      </section>
+    </div>
+  </main>
+
+</body>
+</html>

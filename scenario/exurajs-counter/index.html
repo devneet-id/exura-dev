@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>exurajs-counter</title>
+  <link rel="stylesheet" href="/core/exura.css">
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <header scenario>
+    <small>scenario · exurajs-counter</small>
+    <h1>Module, state and effect</h1>
+    <p>A counter: <code>state.set()</code> runs the effect that renders. The checks below click the buttons themselves.</p>
+    <ul expect></ul>
+  </header>
+
+  <main>
+    <exura-counter>
+      <div flex="a:middle" style="gap:1rem">
+        <button button="default" minus onclick="counter.state.set('count', counter.state.get('count') - 1)">−</button>
+        <strong count text="h2">{{count}}</strong>
+        <button button="primary" plus onclick="counter.state.set('count', counter.state.get('count') + 1)">+</button>
+      </div>
+    </exura-counter>
+  </main>
+  <script src="/core/exura.js"></script>
+  <script src="/index.js"></script>
+</body>
+</html>

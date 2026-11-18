@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>exurajs-template</title>
+  <link rel="stylesheet" href="/core/exura.css">
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <header scenario>
+    <small>scenario · exurajs-template</small>
+    <h1>Template: escaped and raw</h1>
+    <p><code>{{key}}</code> escapes, <code>{{{key}}}</code> inserts raw HTML — in text and in attributes. A script inside a value must never run.</p>
+    <ul expect></ul>
+  </header>
+
+  <main>
+    <exura-view>
+      <p>escaped: <span escaped>{{html}}</span></p>
+      <p>raw: <span raw>{{{html}}}</span></p>
+      <p><a attr href="#" title="{{html}}">title attribute</a></p>
+      <p>missing key stays as written: <span missing>{{nothing}}</span></p>
+    </exura-view>
+  </main>
+  <script src="/core/exura.js"></script>
+  <script src="/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>exurajs-router</title>
+  <link rel="stylesheet" href="/core/exura.css">
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <header scenario>
+    <small>scenario · exurajs-router</small>
+    <h1>Router with params</h1>
+    <p><code>router(pattern, fn)</code> matches <code>location.pathname</code> once. <code>php cast</code> answers unknown paths with this page, so every link below opens it at another path.</p>
+    <ul expect></ul>
+  </header>
+
+  <main>
+    <p>path: <code path></code></p>
+    <ul list="ring:y ring:default-3">
+      <li><a href="/">/</a></li>
+      <li><a href="/user/42">/user/42</a></li>
+      <li><a href="/post/7/comment/3">/post/7/comment/3</a></li>
+      <li><a href="/nothing/here">/nothing/here</a></li>
+    </ul>
+    <exura-route><p text="h5">{{matched}}</p></exura-route>
+  </main>
+  <script src="/core/exura.js"></script>
+  <script src="/index.js"></script>
+</body>
+</html>
