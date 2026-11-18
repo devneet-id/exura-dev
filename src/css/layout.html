@@ -8,77 +8,109 @@
   <link rel="stylesheet" href="/assets/dev.css">
 </head>
 <body>
-  <div container size="py:3">
+  <main dev-page>
+    <header dev-head>
+      <div dev-kicker>exuracss</div>
+      <h1>Layout</h1>
+      <p>Containers, flexbox and sizes as attributes. A breakpoint prefix (<code dev-inline>md:size</code>) applies from that width up.</p>
+    </header>
 
     <section dev-specimen id="container">
-      <h2 text="h4 bold">container</h2>
-      <div dev-box>this page sits in [container] — resize the window to see the max-width steps</div>
-      <p dev-code>container · container="fluid" · container="overflow"</p>
+      <h2>container</h2>
+      <p>Centers the content with a max width per breakpoint. Also <code dev-inline>container="fluid"</code>.</p>
+      <div dev-demo>
+        <div dev-area><div container><div dev-box>[container] — resize the window to see the steps</div></div></div>
+      </div>
     </section>
 
     <section dev-specimen id="flex">
-      <h2 text="h4 bold">flex</h2>
+      <h2>flex</h2>
+      <p><code dev-inline>j:</code> justify, <code dev-inline>a:</code> align, <code dev-inline>d:</code> direction, <code dev-inline>wrap</code>; a child with <code dev-inline>flex="1"</code> fills the rest.</p>
+      <div dev-demo>
+        <div dev-label>flex="j:between a:middle"</div>
+        <div dev-area>
+          <div flex="j:between a:middle">
+            <div dev-box size="p:1">A</div>
+            <div dev-box size="p:2">B (taller)</div>
+            <div dev-box size="p:1">C</div>
+          </div>
+        </div>
 
-      <p dev-code>flex="j:between a:middle"</p>
-      <div flex="j:between a:middle" card="default:1" size="p:1">
-        <div dev-box size="p:1">A</div>
-        <div dev-box size="p:2">B (taller)</div>
-        <div dev-box size="p:1">C</div>
+        <div dev-label size="mt:1">j:center · j:end · j:evenly</div>
+        <div dev-area flex="j:center" size="mb:1"><div dev-box size="px:2">center</div></div>
+        <div dev-area flex="j:end" size="mb:1"><div dev-box size="px:2">end</div></div>
+        <div dev-area flex="j:evenly"><div dev-box size="px:2">1</div><div dev-box size="px:2">2</div><div dev-box size="px:2">3</div></div>
+
+        <div dev-label size="mt:1">flex="d:column", the middle child flex="1"</div>
+        <div dev-area>
+          <div flex="d:column" style="height:10rem">
+            <div dev-box>fixed</div>
+            <div dev-box flex="1">flex="1" fills</div>
+            <div dev-box>fixed</div>
+          </div>
+        </div>
       </div>
-
-      <p dev-code>flex="j:center" · flex="j:end" · flex="j:evenly"</p>
-      <div flex="j:center" card="default:1" size="p:1 mb:1"><div dev-box size="px:2">center</div></div>
-      <div flex="j:end" card="default:1" size="p:1 mb:1"><div dev-box size="px:2">end</div></div>
-      <div flex="j:evenly" card="default:1" size="p:1"><div dev-box size="px:2">1</div><div dev-box size="px:2">2</div><div dev-box size="px:2">3</div></div>
-
-      <p dev-code>flex="d:column" with children flex="1"</p>
-      <div flex="d:column" card="default:1" size="p:1" style="height:10rem">
-        <div dev-box>fixed</div>
-        <div dev-box flex="1">flex="1" fills</div>
-        <div dev-box>fixed</div>
-      </div>
+      <pre dev-code>&lt;div flex="j:between a:middle"&gt;…&lt;/div&gt;
+&lt;div flex="d:column"&gt;&lt;div flex="1"&gt;…&lt;/div&gt;&lt;/div&gt;</pre>
     </section>
 
     <section dev-specimen id="size">
-      <h2 text="h4 bold">size — width</h2>
-      <div flex="wrap">
-        <div size="w:1/2 p:1"><div dev-box>w:1/2</div></div>
-        <div size="w:1/2 p:1"><div dev-box>w:1/2</div></div>
-        <div size="w:1/3 p:1"><div dev-box>w:1/3</div></div>
-        <div size="w:2/3 p:1"><div dev-box>w:2/3</div></div>
-        <div size="w:1/4 p:1"><div dev-box>w:1/4</div></div>
-        <div size="w:3/4 p:1"><div dev-box>w:3/4</div></div>
-        <div size="w:full p:1"><div dev-box>w:full</div></div>
+      <h2>size — width</h2>
+      <p>Fractions of the row: <code dev-inline>w:1/2</code>, <code dev-inline>w:1/3</code>, <code dev-inline>w:3/4</code>, <code dev-inline>w:full</code>…</p>
+      <div dev-demo>
+        <div flex="wrap">
+          <div size="w:1/2 p:1"><div dev-box>w:1/2</div></div>
+          <div size="w:1/2 p:1"><div dev-box>w:1/2</div></div>
+          <div size="w:1/3 p:1"><div dev-box>w:1/3</div></div>
+          <div size="w:2/3 p:1"><div dev-box>w:2/3</div></div>
+          <div size="w:1/4 p:1"><div dev-box>w:1/4</div></div>
+          <div size="w:3/4 p:1"><div dev-box>w:3/4</div></div>
+          <div size="w:full p:1"><div dev-box>w:full</div></div>
+        </div>
       </div>
+      <pre dev-code>&lt;div size="w:1/2 p:1"&gt;…&lt;/div&gt;</pre>
+    </section>
 
-      <h2 text="h4 bold" size="mt:2">size — responsive prefix</h2>
-      <div flex="wrap">
-        <div size="w:full p:1" md:size="w:1/2" lg:size="w:1/4"><div dev-box>full → md 1/2 → lg 1/4</div></div>
-        <div size="w:full p:1" md:size="w:1/2" lg:size="w:1/4"><div dev-box>full → md 1/2 → lg 1/4</div></div>
-        <div size="w:full p:1" md:size="w:1/2" lg:size="w:1/4"><div dev-box>full → md 1/2 → lg 1/4</div></div>
-        <div size="w:full p:1" md:size="w:1/2" lg:size="w:1/4"><div dev-box>full → md 1/2 → lg 1/4</div></div>
+    <section dev-specimen id="responsive">
+      <h2>size — responsive prefix</h2>
+      <p>Full width on phones, half from <code dev-inline>md</code>, a quarter from <code dev-inline>lg</code>.</p>
+      <div dev-demo>
+        <div flex="wrap">
+          <div size="w:full p:1" md:size="w:1/2" lg:size="w:1/4"><div dev-box>1</div></div>
+          <div size="w:full p:1" md:size="w:1/2" lg:size="w:1/4"><div dev-box>2</div></div>
+          <div size="w:full p:1" md:size="w:1/2" lg:size="w:1/4"><div dev-box>3</div></div>
+          <div size="w:full p:1" md:size="w:1/2" lg:size="w:1/4"><div dev-box>4</div></div>
+        </div>
       </div>
+      <pre dev-code>&lt;div size="w:full" md:size="w:1/2" lg:size="w:1/4"&gt;…&lt;/div&gt;</pre>
+    </section>
 
-      <h2 text="h4 bold" size="mt:2">size — spacing</h2>
-      <div flex="wrap a:end" style="gap:.5rem">
-        <div card="primary:2"><div dev-box size="p:1">p:1</div></div>
-        <div card="primary:2"><div dev-box size="p:2">p:2</div></div>
-        <div card="primary:2"><div dev-box size="p:3">p:3</div></div>
-        <div card="primary:2" style="width:12rem"><div dev-box size="w:1/2 mx:auto">mx:auto</div></div>
+    <section dev-specimen id="spacing">
+      <h2>size — spacing</h2>
+      <p>Padding and margin: <code dev-inline>p:1</code>, <code dev-inline>px:2</code>, <code dev-inline>mt:1</code>, <code dev-inline>mx:auto</code>…</p>
+      <div dev-demo>
+        <div flex="wrap a:end" style="gap:.75rem">
+          <div dev-area><div dev-box size="p:1">p:1</div></div>
+          <div dev-area><div dev-box size="p:2">p:2</div></div>
+          <div dev-area><div dev-box size="p:3">p:3</div></div>
+          <div dev-area style="width:12rem"><div dev-box size="w:1/2 mx:auto">mx:auto</div></div>
+        </div>
       </div>
     </section>
 
     <section dev-specimen id="misc">
-      <h2 text="h4 bold">misc</h2>
-      <div card="default:1" size="p:1" misc="o:auto" style="height:6rem">
-        <div misc="p:sticky" card="primary" size="px:1" style="top:0">misc="p:sticky" inside misc="o:auto"</div>
-        <p>scroll ↓</p><p>…</p><p>…</p><p>…</p><p>end</p>
+      <h2>misc</h2>
+      <p>Display, position, overflow and white-space.</p>
+      <div dev-demo>
+        <div dev-area misc="o:auto" style="height:7rem">
+          <div misc="p:sticky" dev-box style="top:0">misc="p:sticky" inside misc="o:auto"</div>
+          <p>scroll ↓</p><p>…</p><p>…</p><p>…</p><p>end</p>
+        </div>
+        <p misc="ws:nowrap" size="mt:1">misc="ws:nowrap" keeps this long sentence on a single line no matter how narrow the window becomes.</p>
       </div>
-      <p misc="ws:nowrap" misc-demo>misc="ws:nowrap" keeps this long sentence on a single line no matter how narrow the window becomes.</p>
-      <p dev-code>misc="d:none" · d:block · p:relative · p:absolute · o:hidden · ox:auto · ws:pre</p>
+      <pre dev-code>misc="d:none" · d:block · p:relative · p:sticky · o:hidden · ox:auto · ws:pre</pre>
     </section>
-
-  </div>
+  </main>
   <script src="/assets/dev.js"></script>
 </body>
 </html>

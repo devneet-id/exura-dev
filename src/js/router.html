@@ -8,19 +8,27 @@
   <link rel="stylesheet" href="/assets/dev.css">
 </head>
 <body>
-  <div container size="py:3">
-    <p text="default">The router matches <code>location.pathname</code> once, when called. This page is at <code id="path"></code>.</p>
-    <exura-nav>
-      <div card="primary:1" size="p:2 mt:1">
-        <p dev-code>router('/js/:page', ({ page }) => …)</p>
-        <p>matched page = <b data-page>{{page}}</b></p>
+  <main dev-page>
+    <header dev-head>
+      <div dev-kicker>exurajs</div>
+      <h1>Router</h1>
+      <p><code dev-inline>router(pattern, fn)</code> matches <code dev-inline>location.pathname</code> once, when called, and passes the <code dev-inline>:params</code> to <code dev-inline>fn</code>. This page is at <code dev-inline id="path"></code>.</p>
+    </header>
+
+    <section dev-specimen>
+      <h2>A pattern that matches, one that does not</h2>
+      <div dev-demo>
+        <exura-nav>
+          <div flex="wrap" style="gap:2rem">
+            <div><div dev-label>router('/js/:page') → page</div><div text="h5" data-page>{{page}}</div></div>
+            <div><div dev-label>router('/user/:id') → id</div><div text="h5" data-user>{{user}}</div></div>
+          </div>
+        </exura-nav>
       </div>
-      <div card="default:1" size="p:2 mt:1">
-        <p dev-code>router('/user/:id', …)</p>
-        <p>matched = <b data-user>{{user}}</b></p>
-      </div>
-    </exura-nav>
-  </div>
+      <pre dev-code>router('/js/:page', ({ page }) => state.set('page', page));
+router('/user/:id', ({ id }) => state.set('user', id));   // no match here</pre>
+    </section>
+  </main>
 
   <script src="/vessel/exura.js"></script>
   <script>

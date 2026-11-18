@@ -1,6 +1,6 @@
 /*
  * exura-dev toolbar — shared by every playground page.
- * Adds a small bar: back to the hub, light/dark switch (remembered), and the page title.
+ * Brand (back to the hub), a nav per package, and a light/dark switch (remembered).
  * Only for the workbench; not part of any package.
  */
 (function () {
@@ -11,15 +11,22 @@
     if (localStorage.getItem(KEY) === '1') body.setAttribute('dark', '');
   } catch (e) {}
 
-  const bar = document.createElement('div');
+  const links = [
+    ['css', '/css/components.html'],
+    ['js', '/js/state.html'],
+    ['php', '/js/api.html'],
+    ['apps', '/apps/notes/'],
+  ];
+  const here = location.pathname;
+  const section = here.startsWith('/apps/') ? 'apps' : here === '/js/api.html' ? 'php' : here.split('/')[1];
+
+  const bar = document.createElement('nav');
   bar.setAttribute('dev-bar', '');
-  bar.setAttribute('flex', 'j:between a:middle');
-  bar.setAttribute('size', 'px:2 py:1');
-  bar.setAttribute('ring', 'b:bottom b:default-3');
   bar.innerHTML = `
-    <a href="/" text="bold">◆ exura-dev</a>
-    <span text="default">${document.title}</span>
-    <button button="default sm" dev-dark>light / dark</button>
+    <a href="/" dev-brand>◆ exura-dev</a>
+    <span dev-nav>${links.map(([name, href]) =>
+      `<a href="${href}" ${name === section ? 'aria-current="page"' : ''}>${name}</a>`).join('')}</span>
+    <button type="button" dev-dark>light / dark</button>
   `;
   body.prepend(bar);
 

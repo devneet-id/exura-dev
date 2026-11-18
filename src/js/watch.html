@@ -8,23 +8,33 @@
   <link rel="stylesheet" href="/assets/dev.css">
 </head>
 <body>
-  <div container size="py:3">
+  <main dev-page>
+    <header dev-head>
+      <div dev-kicker>exurajs</div>
+      <h1>Watch</h1>
+      <p><code dev-inline>watch(selector, fn)</code> runs <code dev-inline>fn</code> once, the first time the element enters the viewport — for lazy content.</p>
+    </header>
+
+    <section dev-specimen>
+      <h2>Two boxes below the fold</h2>
+      <p>Scroll down. Each box changes when it is first seen.</p>
+      <pre dev-code>lazy.watch('#box-1', () => { /* runs once, when seen */ });</pre>
+    </section>
+
     <exura-lazy>
-      <p text="default">Scroll down. Each box runs its watch callback once, when it enters the viewport.</p>
-      <div style="height:110vh" flex="j:center a:middle" text="default">↓</div>
-      <div id="box-1" card="default:1" size="p:3 mb:2" text="center">waiting…</div>
+      <div style="height:100vh" flex="j:center a:middle" dev-label>scroll ↓</div>
+      <div dev-demo id="box-1" text="center">waiting…</div>
       <div style="height:60vh"></div>
-      <div id="box-2" card="default:1" size="p:3 mb:2" text="center">waiting…</div>
+      <div dev-demo id="box-2" text="center">waiting…</div>
     </exura-lazy>
-  </div>
+  </main>
 
   <script src="/vessel/exura.js"></script>
   <script>
     Exura.module(function lazy() {
       const seen = (id) => () => {
         const el = document.getElementById(id);
-        el.textContent = `seen at ${new Date().toLocaleTimeString()}`;
-        el.setAttribute('card', 'primary:2');
+        el.innerHTML = `<span dev-value>✓</span><br>seen at ${new Date().toLocaleTimeString()}`;
         el.dataset.seen = 'true';
       };
       lazy.watch('#box-1', seen('box-1'));

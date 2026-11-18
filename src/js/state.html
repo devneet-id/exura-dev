@@ -8,36 +8,60 @@
   <link rel="stylesheet" href="/assets/dev.css">
 </head>
 <body>
-  <div container size="py:3">
+  <main dev-page>
+    <header dev-head>
+      <div dev-kicker>exurajs</div>
+      <h1>Module, state &amp; effect</h1>
+      <p>A module owns its state. <code dev-inline>state.set()</code> runs every effect whose dependencies changed; <code dev-inline>render()</code> fills the module's template.</p>
+    </header>
 
     <section dev-specimen>
-      <h2 text="h4 bold">module + state + effect(deps)</h2>
-      <exura-counter>
-        <div card="primary:1" size="p:2" flex="j:between a:middle">
-          <span text="h3" data-count>{{count}}</span>
-          <div flex style="gap:.5rem">
-            <button button="default" onclick="counter.state.set('count', counter.state.get('count') - 1)">−</button>
-            <button button="primary" onclick="counter.state.set('count', counter.state.get('count') + 1)">+</button>
+      <h2>Counter</h2>
+      <p>One effect re-renders when <code dev-inline>count</code> changes.</p>
+      <div dev-demo>
+        <exura-counter>
+          <div flex="j:between a:middle">
+            <div>
+              <div dev-label>count</div>
+              <div dev-value data-count>{{count}}</div>
+            </div>
+            <div flex style="gap:.5rem">
+              <button button="default" onclick="counter.state.set('count', counter.state.get('count') - 1)">− 1</button>
+              <button button="primary" onclick="counter.state.set('count', counter.state.get('count') + 1)">+ 1</button>
+            </div>
           </div>
-        </div>
-      </exura-counter>
-      <p dev-code>effect(() => render(), ['count'])</p>
+        </exura-counter>
+      </div>
+      <pre dev-code>Exura.module(function counter() {
+  const { state, effect, render } = counter;
+  state.set('count', 0);
+  effect(() => render(), ['count']);
+});
+counter();</pre>
     </section>
 
     <section dev-specimen>
-      <h2 text="h4 bold">effects with and without deps</h2>
-      <exura-pair>
-        <div card="default:1" size="p:2">a = <b data-a>{{a}}</b> · b = <b data-b>{{b}}</b></div>
-      </exura-pair>
-      <div flex size="mt:1" style="gap:.5rem">
-        <button button="primary" onclick="pair.state.set('a', pair.state.get('a') + 1)">a + 1</button>
-        <button button="secondary" onclick="pair.state.set('b', pair.state.get('b') + 1)">b + 1</button>
-        <button button="default" onclick="pair.state.set('a', pair.state.get('a'))">set a to the same value</button>
+      <h2>Effects with and without deps</h2>
+      <p>An effect without deps runs on every change; one with <code dev-inline>['a']</code> only when <code dev-inline>a</code> changes. Setting the same value runs nothing — watch the log.</p>
+      <div dev-demo>
+        <exura-pair>
+          <div flex="a:end" style="gap:2rem">
+            <div><div dev-label>a</div><div dev-value data-a>{{a}}</div></div>
+            <div><div dev-label>b</div><div dev-value data-b>{{b}}</div></div>
+          </div>
+        </exura-pair>
+        <div flex="wrap" size="mt:1" style="gap:.5rem">
+          <button button="primary" onclick="pair.state.set('a', pair.state.get('a') + 1)">a + 1</button>
+          <button button="secondary" onclick="pair.state.set('b', pair.state.get('b') + 1)">b + 1</button>
+          <button button="default" onclick="pair.state.set('a', pair.state.get('a'))">set a to the same value</button>
+        </div>
       </div>
-      <div dev-log id="pair-log" card="default:1" size="p:1 mt:1"></div>
+      <pre dev-log id="pair-log"></pre>
+      <pre dev-code>effect(() => render());              // every change
+effect(() => log('a ran'), ['a']);   // only when a changes
+effect(() => log('b ran'), ['b']);   // only when b changes</pre>
     </section>
-
-  </div>
+  </main>
 
   <script src="/vessel/exura.js"></script>
   <script>
@@ -50,16 +74,16 @@
 
     const log = (line) => {
       const el = document.getElementById('pair-log');
-      el.textContent = (line + '\n' + el.textContent).split('\n').slice(0, 8).join('\n');
+      el.textContent = [line, ...el.textContent.split('\n').filter(Boolean)].slice(0, 6).join('\n');
     };
 
     Exura.module(function pair() {
       const { state, effect, render } = pair;
       state.set('a', 0);
       state.set('b', 0);
-      effect(() => render());                                        // every change
-      effect(() => log(`effect[a] ran · a=${state.get('a')}`), ['a']); // only when a changes
-      effect(() => log(`effect[b] ran · b=${state.get('b')}`), ['b']); // only when b changes
+      effect(() => render());
+      effect(() => log(`effect[a] ran · a=${state.get('a')}`), ['a']);
+      effect(() => log(`effect[b] ran · b=${state.get('b')}`), ['b']);
     });
     pair();
   </script>
