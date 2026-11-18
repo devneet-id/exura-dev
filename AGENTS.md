@@ -13,6 +13,7 @@ For humans and AI agents. Knowledge of the series lives in [devneet-id/lore](htt
 ## Conventions
 
 - `exploration/` holds every component, ready to copy: a framed demo and the code behind it. Its own look lives in `exploration/assets/` and never uses exuracss tints, so a page stays readable on any version.
+- A scenario leaves the console clean: a warning or error it causes on purpose is caught in the page and shown as a ✓ check, so anything left in the console is a real finding. (The browser still logs the 4xx/5xx answers that exuraphp scenarios ask for.)
 - `scenario/<package>-<possibility>/` is standalone: `index.html` + `index.css` (+ `index.js`, `api/index.php`). Link your own files absolutely (`/index.css`). List it in `scenario/README.md`.
 - A known package issue is listed under *Known issues* in the README, with the scenario that shows it.
 
