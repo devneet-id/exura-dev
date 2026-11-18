@@ -1,6 +1,8 @@
 # Working in exura-dev
 
-For humans and AI agents. Knowledge of the series lives in [devneet-id/lore](https://github.com/devneet-id/lore) (`realms/exura/`); read it first.
+For humans and AI agents. Start with [WORKFLOW.md](WORKFLOW.md) — the roles of the repositories and the cycle explore → issue → develop → release — and [HANDOFF.md](HANDOFF.md) if it exists.
+
+Knowledge of the series lives in [devneet-id/lore](https://github.com/devneet-id/lore) (`realms/exura/`); read it first.
 
 ## Laws
 
@@ -15,6 +17,10 @@ For humans and AI agents. Knowledge of the series lives in [devneet-id/lore](htt
 - `exploration/` holds every component, ready to copy: a framed demo and the code behind it. Its own look lives in `exploration/assets/` and never uses exuracss tints, so a page stays readable on any version.
 - `scenario/<package>-<possibility>/` is standalone: `index.html` + `index.css` (+ `index.js`, `api/index.php`). Link your own files absolutely (`/index.css`). List it in `scenario/README.md`.
 - A known package issue is listed under *Known issues* in the README, with the scenario that shows it.
+
+## Findings go to issues
+
+A bug or an idea found here is **not fixed here, and not fixed straight away in a package**. Open an issue in the package's own repository — devneet-id/exuracss, devneet-id/exurajs or devneet-id/exuraphp — with how to see it (the scenario or exploration page), what is expected, and a proposal. exura-dev itself holds no issues. The issues are worked on later, in each repository.
 
 ## After advancing work
 

@@ -7,6 +7,8 @@ The packages live in their own repositories. This repo fetches their released fi
 - **`exploration/`** — every component of the three packages, ready to read and copy, and a complete app (CRUD + API).
 - **`scenario/`** — one possibility per folder. There are no tests: if something is wrong, it shows in the scenario that uses it.
 
+How the series is developed — exura-dev for trying, the package repos for issues and releases: [WORKFLOW.md](WORKFLOW.md).
+
 Both runites are shaped with [Rune](https://github.com/devneet-id/rune).
 
 ## Layout
@@ -87,4 +89,5 @@ Every cast takes `--port=8080`, `--host=localhost` and `--public`. The folder be
 - **exuracss 1.1.0** — `card="NAME:N"` keeps one text color for all ten shades: light tints carry white text on a light page, some dark-page tints dark text. Visible in `scenario/exuracss-tint` and `exploration/exuracss/color.html`. Fixed in AnwarAchilles/exuracss#1.
 - **exuracss 1.1.0** — `strong, em { color: #dc3b3b }`: every `<strong>` and `<em>` is red.
 - **exuracss 1.1.0** — `* { transition: all .05s }` animates every property of every element.
+- **exuraphp 1.1.0** — `Exura::method()` reads values but does not validate them, and `scenario/exuraphp-method-values` shows where reading goes wrong: a JSON `null` returns the default; big integers lose digits (no `JSON_BIGINT_AS_STRING`); multipart fields of a PUT/PATCH are not read; a JSON body that is not an object together with a query string crashes into an empty 500 (`array_merge` on an int); broken JSON is read as a form, leaving odd keys, instead of answering 400.
 - **Rune 1.21.117** — `aether_exit()` ends every run with a bare `exit`, so a runite always exits 0; `cast` sets the real code from a shutdown function.
