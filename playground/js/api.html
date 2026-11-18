@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>php · request console</title>
+  <link rel="stylesheet" href="/pkg/exuracss/exura.css">
+  <link rel="stylesheet" href="/assets/dev.css">
+</head>
+<body>
+  <div container size="py:3">
+    <exura-console>
+      <form flex="wrap a:end" onsubmit="event.preventDefault(); console_.send()">
+        <div size="w:full p:1" md:size="w:1/6">
+          <label>Method</label>
+          <select name="request">
+            <option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option>
+          </select>
+        </div>
+        <div size="w:full p:1" md:size="w:2/3">
+          <label>Route</label>
+          <input name="route" type="text" value="/api/echo?name=exura">
+        </div>
+        <div size="w:full p:1" md:size="w:1/6">
+          <button button="primary" size="w:full">Send</button>
+        </div>
+        <div size="w:full p:1">
+          <label>JSON body</label>
+          <textarea name="body" rows="3">{"title": "from the console"}</textarea>
+        </div>
+      </form>
+      <div card="default:1" size="p:2 mt:1">
+        <p text="bold" data-status>{{status}}</p>
+        <pre dev-log data-output>{{output}}</pre>
+      </div>
+    </exura-console>
+  </div>
+
+  <script src="/pkg/exurajs/exura.js"></script>
+  <script>
+    // `console` is taken by the browser, so the module is console_
+    Exura.module(function console_() {
+      const { state, effect, render } = console_;
+      state.set('status', 'ready');
+      state.set('output', '');
+
+      console_.send = async () => {
+        const form = document.querySelector('exura-console form');
+        const request = form.request.value;
+        const route = form.route.value;
+        const options = { method: request, headers: {} };
+        if (request !== 'GET' && form.body.value.trim()) {
+          options.body = form.body.value;
+          options.headers['Content-Type'] = 'application/json';
+        }
+        const values = [form.request.value, form.route.value, form.body.value];
+        const started = performance.now();
+        const response = await fetch(route, options);
+        const text = await response.text();
+        state.set('output', text);
+        state.set('status', `${request} ${route} → ${response.status} · ${Math.round(performance.now() - started)}ms`);
+        // render() rebuilds the form, so put the user's values back
+        const again = document.querySelector('exura-console form');
+        [again.request.value, again.route.value, again.body.value] = values;
+      };
+
+      effect(() => render(), ['status', 'output']);
+    });
+    console_();
+  </script>
+  <script src="/assets/dev.js"></script>
+</body>
+</html>

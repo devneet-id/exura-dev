@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>js · watch</title>
+  <link rel="stylesheet" href="/pkg/exuracss/exura.css">
+  <link rel="stylesheet" href="/assets/dev.css">
+</head>
+<body>
+  <div container size="py:3">
+    <exura-lazy>
+      <p text="default">Scroll down. Each box runs its watch callback once, when it enters the viewport.</p>
+      <div style="height:110vh" flex="j:center a:middle" text="default">↓</div>
+      <div id="box-1" card="default:1" size="p:3 mb:2" text="center">waiting…</div>
+      <div style="height:60vh"></div>
+      <div id="box-2" card="default:1" size="p:3 mb:2" text="center">waiting…</div>
+    </exura-lazy>
+  </div>
+
+  <script src="/pkg/exurajs/exura.js"></script>
+  <script>
+    Exura.module(function lazy() {
+      const seen = (id) => () => {
+        const el = document.getElementById(id);
+        el.textContent = `seen at ${new Date().toLocaleTimeString()}`;
+        el.setAttribute('card', 'primary:2');
+        el.dataset.seen = 'true';
+      };
+      lazy.watch('#box-1', seen('box-1'));
+      lazy.watch('#box-2', seen('box-2'));
+    });
+    lazy();
+  </script>
+  <script src="/assets/dev.js"></script>
+</body>
+</html>

@@ -111,6 +111,7 @@ $commands = [
     }
     note('npm install (playwright, for tests)');
     run('npm install --no-audit --no-fund', ROOT) === 0 ? ok('npm') : fail('npm');
+    note('first time on this machine? also: npx playwright install chromium');
   },
 
   'serve' => function () use ($config, $options) {
@@ -156,7 +157,7 @@ $commands = [
       }
     }
     title('Test ' . implode(', ', $selected));
-    $files = array_map(fn($suite) => escapeshellarg("tests/$suite"), $selected);
+    $files = array_map(fn($suite) => escapeshellarg("tests/$suite/**/*.test.mjs"), $selected);
     exit(run('node --test --test-reporter=spec ' . implode(' ', $files), ROOT));
   },
 

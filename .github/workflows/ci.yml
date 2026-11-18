@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+    branches: [main, 1.x]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Size budget
+        run: php dev size
+
+      - name: Tests
+        run: php dev test

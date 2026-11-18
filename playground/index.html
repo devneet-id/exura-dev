@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Playground</title>
+  <link rel="stylesheet" href="/pkg/exuracss/exura.css">
+  <link rel="stylesheet" href="/pkg/exuracss/exura-clip.css">
+  <link rel="stylesheet" href="/assets/dev.css">
+</head>
+<body>
+  <div container size="py:3">
+    <h1 text="h2 bold">Exura playground</h1>
+    <p text="default">The workbench of the series. Every page loads the packages' <code>dist/</code> — rebuild with <code>php dev build &lt;pkg&gt;</code> and refresh.</p>
+
+    <div flex="wrap" size="mt:2">
+
+      <div size="w:full p:1" md:size="w:1/2">
+        <div card="primary:1" text="dark" ring="b:full b:primary-3" size="p:2 h:full">
+          <h2 text="h4 bold"><i clip="e:sparkles"></i> exuracss</h2>
+          <ul list="ring:y ring:default-2">
+            <li><a href="/css/components.html">Components — button, card, form, list, table</a></li>
+            <li><a href="/css/layout.html">Layout — container, flex, size, misc</a></li>
+            <li><a href="/css/text.html">Text &amp; ring</a></li>
+            <li><a href="/css/color.html">Color balancing — shades 1–10</a></li>
+            <li><a href="/css/clip.html">Clip — emoji icons</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div size="w:full p:1" md:size="w:1/2">
+        <div card="primary:1" text="dark" ring="b:full b:primary-3" size="p:2 h:full">
+          <h2 text="h4 bold"><i clip="e:gear"></i> exurajs</h2>
+          <ul list="ring:y ring:default-2">
+            <li><a href="/js/state.html">Module, state &amp; effect</a></li>
+            <li><a href="/js/template.html">Template — escaped and raw</a></li>
+            <li><a href="/js/store.html">Store</a></li>
+            <li><a href="/js/watch.html">Watch — lazy on viewport</a></li>
+            <li><a href="/js/router.html">Router</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div size="w:full p:1" md:size="w:1/2">
+        <div card="primary:1" text="dark" ring="b:full b:primary-3" size="p:2 h:full">
+          <h2 text="h4 bold"><i clip="e:rocket"></i> exuraphp</h2>
+          <ul list="ring:y ring:default-2">
+            <li><a href="/api/hello">GET /api/hello</a></li>
+            <li><a href="/api/echo?name=exura&amp;n=1">GET /api/echo?name=exura</a></li>
+            <li><a href="/api/user/42">GET /api/user/42 — wildcard</a></li>
+            <li><a href="/api/notes">GET /api/notes</a></li>
+            <li><a href="/api/fail">GET /api/fail — error as JSON</a></li>
+            <li><a href="/api/nowhere">GET /api/nowhere — fallback 404</a></li>
+            <li><a href="/js/api.html">Request console (any method, any body)</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div size="w:full p:1" md:size="w:1/2">
+        <div card="primary:1" text="dark" ring="b:full b:primary-3" size="p:2 h:full">
+          <h2 text="h4 bold"><i clip="e:star"></i> apps — the three together</h2>
+          <ul list="ring:y ring:default-2">
+            <li><a href="/apps/notes/">Notes — exuracss + exurajs + exuraphp</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script src="/assets/dev.js"></script>
+</body>
+</html>

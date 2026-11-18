@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>css · components</title>
+  <link rel="stylesheet" href="/pkg/exuracss/exura.css">
+  <link rel="stylesheet" href="/assets/dev.css">
+</head>
+<body>
+  <div container size="py:3">
+
+    <section dev-specimen id="button">
+      <h2 text="h4 bold">button</h2>
+      <div flex="wrap a:middle" style="gap:.5rem">
+        <button button="primary">primary</button>
+        <button button="secondary">secondary</button>
+        <button button="default">default</button>
+        <button button="dark">dark</button>
+        <button button="light">light</button>
+        <button button="white">white</button>
+        <button button="black">black</button>
+        <button button="none">none</button>
+      </div>
+      <div flex="wrap a:middle" size="mt:1" style="gap:.5rem">
+        <button button="primary sm">primary sm</button>
+        <button button="primary">primary</button>
+        <button button="primary lg">primary lg</button>
+        <a href="#button" button="secondary">a[button]</a>
+      </div>
+      <p dev-code>&lt;button button="primary lg"&gt;</p>
+    </section>
+
+    <section dev-specimen id="card">
+      <h2 text="h4 bold">card</h2>
+      <div flex="wrap">
+        <div size="w:full p:1" md:size="w:1/3">
+          <div card="primary" size="p:2">card="primary"</div>
+        </div>
+        <div size="w:full p:1" md:size="w:1/3">
+          <div card="primary:2" ring="b:full b:primary-5" size="p:2">card="primary:2" + ring</div>
+        </div>
+        <div size="w:full p:1" md:size="w:1/3">
+          <div card="default:1" size="p:2">card="default:1"</div>
+        </div>
+        <div size="w:full p:1" md:size="w:1/3">
+          <div card="secondary sm" size="p:2">card="secondary sm"</div>
+        </div>
+        <div size="w:full p:1" md:size="w:1/3">
+          <div card="light" size="p:2">card="light"</div>
+        </div>
+        <div size="w:full p:1" md:size="w:1/3">
+          <div card="dark lg" size="p:2">card="dark lg"</div>
+        </div>
+      </div>
+    </section>
+
+    <section dev-specimen id="form">
+      <h2 text="h4 bold">form</h2>
+      <form flex="wrap" onsubmit="return false">
+        <div size="w:full p:1" md:size="w:1/2">
+          <label>Text</label>
+          <input type="text" placeholder="type here">
+        </div>
+        <div size="w:full p:1" md:size="w:1/2">
+          <label>Email</label>
+          <input type="email" placeholder="you@example.com">
+        </div>
+        <div size="w:full p:1" md:size="w:1/2">
+          <label>Select</label>
+          <select><option>one</option><option>two</option></select>
+        </div>
+        <div size="w:full p:1" md:size="w:1/2">
+          <label>Number · range · color</label>
+          <div flex="a:middle" style="gap:.5rem">
+            <input type="number" value="3">
+            <input type="range">
+            <input type="color" value="#4360CF">
+          </div>
+        </div>
+        <div size="w:full p:1">
+          <label>Textarea</label>
+          <textarea rows="3">Notes…</textarea>
+        </div>
+        <div size="w:full p:1" flex="a:middle" style="gap:1rem">
+          <label><input type="checkbox" checked> checkbox</label>
+          <label><input type="radio" name="r" checked> radio a</label>
+          <label><input type="radio" name="r"> radio b</label>
+          <button button="primary" size="ms:auto">Submit</button>
+        </div>
+      </form>
+    </section>
+
+    <section dev-specimen id="list">
+      <h2 text="h4 bold">list</h2>
+      <div flex="wrap">
+        <div size="w:full p:1" md:size="w:1/2">
+          <ul list="ring:y ring:default-3">
+            <li>list="ring:y ring:default-3"</li>
+            <li>second</li>
+            <li>third</li>
+          </ul>
+        </div>
+        <div size="w:full p:1" md:size="w:1/2">
+          <ul list="dir:x ring:primary-5">
+            <li>dir:x</li>
+            <li>second</li>
+            <li>third</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section dev-specimen id="table">
+      <h2 text="h4 bold">table</h2>
+      <table table="ring">
+        <thead><tr><th>Package</th><th>Language</th><th>Role</th></tr></thead>
+        <tbody>
+          <tr><td>exuracss</td><td>CSS</td><td>semantic styling</td></tr>
+          <tr><td>exurajs</td><td>JavaScript</td><td>reactive frontend</td></tr>
+          <tr><td>exuraphp</td><td>PHP</td><td>HTTP API</td></tr>
+        </tbody>
+      </table>
+      <p dev-code>table="ring" · also ring:x, ring:y, ring:primary-5, lg</p>
+    </section>
+
+  </div>
+  <script src="/assets/dev.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>css · color</title>
+  <link rel="stylesheet" href="/pkg/exuracss/exura.css">
+  <link rel="stylesheet" href="/assets/dev.css">
+</head>
+<body>
+  <div container size="py:3">
+    <p text="default">Every color of <code>exura.json</code> with its ten transparent shades. Switch light / dark: the same shades must stay readable on both — that is color balancing.</p>
+    <div id="palette" size="mt:2"></div>
+  </div>
+
+  <script>
+    // read the palette from the built stylesheet, so new colors show up without touching this page
+    const names = new Set();
+    for (const sheet of document.styleSheets) {
+      let rules;
+      try { rules = sheet.cssRules; } catch (e) { continue; }
+      for (const rule of rules) {
+        if (rule.selectorText !== ':root') continue;
+        for (const prop of rule.style) {
+          const m = prop.match(/^--color-([a-z]+)$/);
+          if (m) names.add(m[1]);
+        }
+      }
+    }
+
+    const palette = document.getElementById('palette');
+    for (const name of names) {
+      const shades = Array.from({ length: 10 }, (_, i) => i + 1).map(i => `
+        <div size="p:1" style="width:10%">
+          <div card="${name}:${i}" size="p:1" text="center" title="card=&quot;${name}:${i}&quot;">${i}</div>
+        </div>`).join('');
+      palette.insertAdjacentHTML('beforeend', `
+        <section dev-specimen>
+          <h2 text="h5 bold"><span card="${name}" size="px:1">${name}</span></h2>
+          <div flex="nowrap">${shades}</div>
+        </section>`);
+    }
+  </script>
+  <script src="/assets/dev.js"></script>
+</body>
+</html>

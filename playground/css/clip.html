@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>css · clip</title>
+  <link rel="stylesheet" href="/pkg/exuracss/exura.css">
+  <link rel="stylesheet" href="/pkg/exuracss/exura-clip.css">
+  <link rel="stylesheet" href="/assets/dev.css">
+</head>
+<body>
+  <div container size="py:3">
+    <p text="default">Grammar: <code>clip="e:NAME a:ANIMATION ef:EFFECT"</code>. The old forms <code>clip="NAME"</code>, <code>animate:NAME</code> and <code>effect:NAME</code> are marked for deprecation.</p>
+
+    <section dev-specimen>
+      <h2 text="h4 bold">animation <span dev-code>a:*</span></h2>
+      <div id="animations" flex="wrap" style="gap:1rem"></div>
+    </section>
+
+    <section dev-specimen>
+      <h2 text="h4 bold">effect <span dev-code>ef:*</span></h2>
+      <div id="effects" flex="wrap" style="gap:1rem"></div>
+    </section>
+
+    <section dev-specimen>
+      <h2 text="h4 bold">emoji <span dev-code>e:*</span> <span id="count" text="default"></span></h2>
+      <input id="filter" type="search" placeholder="filter…">
+      <div id="emoji" flex="wrap" size="mt:1"></div>
+    </section>
+  </div>
+
+  <script>
+    // list every clip from the built stylesheet itself
+    const found = { e: new Set(), a: new Set(), ef: new Set() };
+    for (const sheet of document.styleSheets) {
+      let rules;
+      try { rules = sheet.cssRules; } catch (e) { continue; }
+      for (const rule of rules) {
+        for (const m of (rule.selectorText || '').matchAll(/\[clip~="(e|a|ef):([a-z0-9-]+)"\]/g)) {
+          found[m[1]].add(m[2]);
+        }
+      }
+    }
+
+    const cell = (attr, label) => `
+      <div text="center" style="width:6.5rem" title='clip="${attr}"'>
+        <i clip="${attr}" style="font-size:2rem"></i>
+        <div dev-code text="ellipsis">${label}</div>
+      </div>`;
+
+    document.getElementById('animations').innerHTML =
+      [...found.a].map(a => cell(`e:rocket a:${a}`, a)).join('');
+    document.getElementById('effects').innerHTML =
+      [...found.ef].map(ef => cell(`e:star ef:${ef}`, ef)).join('');
+
+    const emoji = document.getElementById('emoji');
+    const draw = (q = '') => {
+      const list = [...found.e].filter(n => n.includes(q));
+      emoji.innerHTML = list.map(n => cell(`e:${n}`, n)).join('');
+      document.getElementById('count').textContent = `(${list.length} / ${found.e.size})`;
+    };
+    document.getElementById('filter').addEventListener('input', ev => draw(ev.target.value.trim()));
+    draw();
+  </script>
+  <script src="/assets/dev.js"></script>
+</body>
+</html>

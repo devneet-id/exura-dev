@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>js · store</title>
+  <link rel="stylesheet" href="/pkg/exuracss/exura.css">
+  <link rel="stylesheet" href="/assets/dev.css">
+</head>
+<body>
+  <div container size="py:3">
+
+    <section dev-specimen>
+      <h2 text="h4 bold">store (static) + state (reactive), merged on render</h2>
+      <exura-profile>
+        <div card="primary:1" size="p:2">
+          <p text="h4" data-title>{{title}}</p>
+          <p>by <b data-author>{{author}}</b> · views <b data-views>{{views}}</b></p>
+        </div>
+      </exura-profile>
+      <div flex size="mt:1" style="gap:.5rem">
+        <button button="primary" onclick="profile.state.set('views', profile.state.get('views') + 1)">state: views + 1</button>
+        <button button="default" onclick="profile.store.set('author', 'someone else'); profile.render()">store: change author + render()</button>
+      </div>
+      <p dev-code>store.set() does not re-render by itself; state.set() triggers effects. State wins over store on the same key.</p>
+    </section>
+
+  </div>
+
+  <script src="/pkg/exurajs/exura.js"></script>
+  <script>
+    Exura.module(function profile() {
+      const { store, state, effect, render } = profile;
+      store.set('title', 'Exura notes');
+      store.set('author', 'exura-dev');
+      state.set('views', 0);
+      effect(() => render(), ['views']);
+    });
+    profile();
+  </script>
+  <script src="/assets/dev.js"></script>
+</body>
+</html>

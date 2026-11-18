@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>js · template</title>
+  <link rel="stylesheet" href="/pkg/exuracss/exura.css">
+  <link rel="stylesheet" href="/assets/dev.css">
+</head>
+<body>
+  <div container size="py:3">
+
+    <section dev-specimen>
+      <h2 text="h4 bold">{{key}} is escaped · {{{key}}} is raw</h2>
+      <input id="source" type="text" value="<b>bold</b> & <i>italic</i>">
+      <exura-preview>
+        <div flex="wrap" size="mt:1">
+          <div size="w:full p:1" md:size="w:1/2">
+            <div card="default:1" size="p:2">
+              <p dev-code>escaped</p>
+              <div data-escaped>{{html}}</div>
+            </div>
+          </div>
+          <div size="w:full p:1" md:size="w:1/2">
+            <div card="primary:1" size="p:2">
+              <p dev-code>raw</p>
+              <div data-raw>{{{html}}}</div>
+            </div>
+          </div>
+          <div size="w:full p:1">
+            <a data-attr href="#" title="{{html}}" card="default:1" size="p:1">hover me — the title attribute is escaped too</a>
+          </div>
+        </div>
+      </exura-preview>
+    </section>
+
+    <section dev-specimen>
+      <h2 text="h4 bold">render(newBoiler) — swap the template</h2>
+      <exura-swap><p card="default:1" size="p:2">Template A · {{name}}</p></exura-swap>
+      <div flex size="mt:1" style="gap:.5rem">
+        <button button="primary" onclick="swap.render('<p card=&quot;primary:2&quot; size=&quot;p:2&quot;>Template B · {{name}}</p>')">use template B</button>
+        <button button="default" onclick="swap.render('<p card=&quot;default:1&quot; size=&quot;p:2&quot;>Template A · {{name}}</p>')">back to A</button>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="/pkg/exurajs/exura.js"></script>
+  <script>
+    Exura.module(function preview() {
+      const { state, effect, render } = preview;
+      state.set('html', document.getElementById('source').value);
+      effect(() => render(), ['html']);
+    });
+    preview();
+    document.getElementById('source').addEventListener('input', e => preview.state.set('html', e.target.value));
+
+    Exura.module(function swap() {
+      swap.state.set('name', 'exura');
+      swap.render();
+    });
+    swap();
+  </script>
+  <script src="/assets/dev.js"></script>
+</body>
+</html>

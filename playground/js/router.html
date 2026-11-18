@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>js · router</title>
+  <link rel="stylesheet" href="/pkg/exuracss/exura.css">
+  <link rel="stylesheet" href="/assets/dev.css">
+</head>
+<body>
+  <div container size="py:3">
+    <p text="default">The router matches <code>location.pathname</code> once, when called. This page is at <code id="path"></code>.</p>
+    <exura-nav>
+      <div card="primary:1" size="p:2 mt:1">
+        <p dev-code>router('/js/:page', ({ page }) => …)</p>
+        <p>matched page = <b data-page>{{page}}</b></p>
+      </div>
+      <div card="default:1" size="p:2 mt:1">
+        <p dev-code>router('/user/:id', …)</p>
+        <p>matched = <b data-user>{{user}}</b></p>
+      </div>
+    </exura-nav>
+  </div>
+
+  <script src="/pkg/exurajs/exura.js"></script>
+  <script>
+    document.getElementById('path').textContent = location.pathname;
+
+    Exura.module(function nav() {
+      const { state, router, render } = nav;
+      state.set('page', '— no match —');
+      state.set('user', '— no match (expected) —');
+      router('/js/:page', ({ page }) => state.set('page', page));
+      router('/user/:id', ({ id }) => state.set('user', id));
+      render();
+    });
+    nav();
+  </script>
+  <script src="/assets/dev.js"></script>
+</body>
+</html>
