@@ -32,7 +32,7 @@ function show(method, route, status, text) {
 
 (async () => {
   let r = await call('GET', 'mode');
-  expect('Exura::environment() exists', r.status === 200 && r.json.data.environment === true);
+  expect('Exura::configure() exists', r.status === 200 && r.json.data.configure === true);
   r = await call('GET', 'hello');
   expect('GET hello → 200 with data', r.status === 200 && r.json.data === 'hello');
 })();

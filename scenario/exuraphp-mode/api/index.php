@@ -9,14 +9,14 @@ if (!is_file("$dir/core/exura.php")) {
 require "$dir/core/exura.php";
 
 // development | production
-// guarded: on a version without environment() the routes still answer and the page shows ✗
-if (method_exists('Exura', 'environment')) {
-  Exura::environment([
+// guarded: on a version without configure() the routes still answer and the page shows ✗
+if (method_exists('Exura', 'configure')) {
+  Exura::configure([
     'mode' => 'development',
   ]);
 }
 
-Exura::module('GET', 'mode', fn() => ['data' => ['environment' => method_exists('Exura', 'environment')]]);
+Exura::module('GET', 'mode', fn() => ['data' => ['configure' => method_exists('Exura', 'configure')]]);
 
 Exura::module('GET', 'hello', fn() => ['data' => 'hello']);
 

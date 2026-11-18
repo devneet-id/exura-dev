@@ -11,7 +11,7 @@
   <header scenario>
     <small>scenario · exuraphp-mode</small>
     <h1>Switch mode: development &amp; production</h1>
-    <p><code>Exura::environment(['mode' =&gt; …])</code> switches exuraphp between development and production. What each mode changes is still being decided. The page calls <code>api/</code> and checks each answer.</p>
+    <p><code>Exura::configure(['mode' =&gt; …])</code> overrides the settings of exuraphp; <code>'mode' =&gt; 'production'</code> is meant to remove the trace from every answer. What exactly each mode shows is still being decided. The page calls <code>api/</code> and checks each answer.</p>
     <ul expect></ul>
   </header>
 

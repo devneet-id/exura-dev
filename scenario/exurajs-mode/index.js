@@ -12,7 +12,7 @@ function expect(label, ok) {
 const mode = 'development';
 document.querySelector('[mode]').textContent = mode;
 
-expect('Exura.environment() exists', typeof Exura.environment === 'function');
-if (typeof Exura.environment === 'function') {
-  Exura.environment({ mode });
+expect('Exura.configure() exists', typeof Exura.configure === 'function');
+if (typeof Exura.configure === 'function') {
+  Exura.configure({ mode });
 }
