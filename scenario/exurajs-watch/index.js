@@ -17,11 +17,18 @@ Exura.module(function lazy() {
   };
   lazy.watch('#one', mark('one'));
   lazy.watch('#two', mark('two'));
-  lazy.watch('#absent', mark('one'));   // a missing target only warns
 });
 lazy();
 
 expect('nothing is seen before scrolling', seen.one === 0 && seen.two === 0);
+
+// a missing target only warns: catch the warning here instead of leaving it in the console
+const warnings = [];
+const warn = console.warn;
+console.warn = (message) => warnings.push(String(message));
+lazy.watch('#absent', () => {});
+console.warn = warn;
+expect('a missing target only warns: "watch target #absent not found"', warnings.length === 1 && warnings[0].includes('#absent'));
 function check() {
   document.querySelectorAll('[expect] li[late]').forEach(li => li.remove());
   const add = (label, ok) => { expect(label, ok); document.querySelector('[expect] li:last-child').setAttribute('late', ''); };

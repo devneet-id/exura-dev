@@ -26,7 +26,7 @@ There are no tests here: **a scenario shows its own result**. The header of ever
 | `exurajs-template` | `{{ }}` escapes, `{{{ }}}` is raw (and trusted), missing keys stay | ✓ / ✗ |
 | `exurajs-list` | rendering a list through an effect and `{{{items}}}`, escaped titles | ✓ / ✗ |
 | `exurajs-router` | `router()` params at `/`, `/user/42`, `/post/7/comment/3`, no match | ✓ / ✗ |
-| `exurajs-watch` | `watch()` runs once when seen, a missing target only warns | ✓ / ✗ (scroll) |
+| `exurajs-watch` | `watch()` runs once when seen; a missing target only warns (caught in the page) | ✓ / ✗ (scroll) |
 | `exurajs-modules` | two modules, one drives the other, a module without its element | ✓ / ✗ |
 | `exuraphp-routing` | methods, method lists, wildcards, whole-route match, `?/route`, 404 | ✓ / ✗ |
 | `exuraphp-request` | `method()` from query, JSON and form; `return`, `data`, `header`, the trace | ✓ / ✗ |
