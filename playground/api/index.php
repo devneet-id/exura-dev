@@ -1,6 +1,6 @@
 <?php
 /**
- * exuraphp playground — served at /api/<route> by `php dev serve`.
+ * exuraphp playground — served at /api/<route> by `php cast serve`.
  * Also works behind Apache/nginx as api/index.php?/route.
  */
 require __DIR__ . '/../../packages/exuraphp/dist/exura.php';

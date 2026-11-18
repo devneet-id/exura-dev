@@ -26,8 +26,11 @@ jobs:
           npm install --no-audit --no-fund
           npx playwright install --with-deps chromium
 
+      - name: Install Rune
+        run: composer install --no-interaction --no-progress
+
       - name: Size budget
-        run: php dev size
+        run: php cast size
 
       - name: Tests
-        run: php dev test
+        run: php cast test

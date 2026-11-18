@@ -4,8 +4,8 @@
   "description": "Workbench of the Exura series: playground and tests for exuracss, exurajs and exuraphp.",
   "type": "module",
   "scripts": {
-    "test": "php dev test",
-    "serve": "php dev serve"
+    "test": "php cast test",
+    "serve": "php cast serve"
   },
   "devDependencies": {
     "playwright": "^1.63.0"

@@ -1,6 +1,6 @@
 <?php
 /**
- * Router for `php -S` (started by `php dev serve`).
+ * Router for `php -S` (started by `php cast serve`).
  *
  *   /pkg/<package>/<file>   a file from packages/<package>/dist (e.g. /pkg/exuracss/exura.min.css)
  *   /api/<route>            the exuraphp playground (api/index.php), as if served at /api/index.php
@@ -36,7 +36,7 @@ if (preg_match('#^/pkg/(exuracss|exurajs|exuraphp)/(.+)$#', $path, $m)) {
     return $send($file);
   }
   http_response_code(404);
-  echo "Not in packages/{$m[1]}/dist: {$m[2]} (run: php dev build {$m[1]})";
+  echo "Not in packages/{$m[1]}/dist: {$m[2]} (run: php cast build --" . substr($m[1], 5) . ")";
   return true;
 }
 

@@ -1,3 +1,5 @@
+/vendor/
+/.echoes/
 /node_modules/
 /playground/.data/
 /test-results/
