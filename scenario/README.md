@@ -31,6 +31,7 @@ There are no tests here: **a scenario shows its own result**. The header of ever
 | `exuraphp-routing` | methods, method lists, wildcards, whole-route match, `?/route`, 404 | ✓ / ✗ |
 | `exuraphp-request` | `method()` from query, JSON and form; `return`, `data`, `header`, the trace | ✓ / ✗ |
 | `exuraphp-errors` | exception, warning, undefined function → 500 JSON; a notice stays 200 | ✓ / ✗ |
+| `exuraphp-method-values` | every kind of value through `Exura::method()`: JSON types, query, form, multipart, PUT, merged sources, broken bodies | ✓ / ✗ — 6 ✗ on 1.1.0 |
 
 ## Add a scenario
 
