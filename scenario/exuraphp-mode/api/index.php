@@ -8,19 +8,16 @@ if (!is_file("$dir/core/exura.php")) {
 }
 require "$dir/core/exura.php";
 
+// development | production
+// guarded: on a version without environment() the routes still answer and the page shows ✗
+if (method_exists('Exura', 'environment')) {
+  Exura::environment([
+    'mode' => 'development',
+  ]);
+}
 
-Exura::environment([
-  "mode"=> "development"
-]);
-
+Exura::module('GET', 'mode', fn() => ['data' => ['environment' => method_exists('Exura', 'environment')]]);
 
 Exura::module('GET', 'hello', fn() => ['data' => 'hello']);
-
-Exura::module(['PUT', 'PATCH'], 'item', fn() => ['data' => ExuraEnvironment::getRequest()]);
-
-Exura::module('GET', 'user/*', function () {
-  $parts = explode('/', trim(ExuraEnvironment::getRoute(), '/'));
-  return ['data' => $parts[array_search('user', $parts) + 1] ?? null];
-});
 
 Exura::fallback();

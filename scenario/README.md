@@ -27,8 +27,10 @@ There are no tests here: **a scenario shows its own result**. The header of ever
 | `exurajs-list` | rendering a list through an effect and `{{{items}}}`, escaped titles | ✓ / ✗ |
 | `exurajs-router` | `router()` params at `/`, `/user/42`, `/post/7/comment/3`, no match | ✓ / ✗ |
 | `exurajs-watch` | `watch()` runs once when seen, a missing target only warns | ✓ / ✗ (scroll) |
+| `exurajs-mode` | `Exura.environment({ mode })` switches development / production (what each mode changes: to decide) | ✓ / ✗ — draft |
 | `exurajs-modules` | two modules, one drives the other, a module without its element | ✓ / ✗ |
 | `exuraphp-routing` | methods, method lists, wildcards, whole-route match, `?/route`, 404 | ✓ / ✗ |
+| `exuraphp-mode` | `Exura::environment(['mode' => …])` switches development / production (what each mode changes: to decide) | ✓ / ✗ — draft, ✗ on 1.1.0 |
 | `exuraphp-request` | `method()` from query, JSON and form; `return`, `data`, `header`, the trace | ✓ / ✗ |
 | `exuraphp-errors` | exception, warning, undefined function → 500 JSON; a notice stays 200 | ✓ / ✗ |
 | `exuraphp-method-values` | every kind of value through `Exura::method()`: JSON types, query, form, multipart, PUT, merged sources, broken bodies | ✓ / ✗ — 6 ✗ on 1.1.0 |

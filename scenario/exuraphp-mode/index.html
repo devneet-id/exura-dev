@@ -8,23 +8,17 @@
   <link rel="stylesheet" href="/index.css">
 </head>
 <body>
-
   <header scenario>
     <small>scenario · exuraphp-mode</small>
-    <h1>Switch mode development & production</h1>
-    <p>...</p>
+    <h1>Switch mode: development &amp; production</h1>
+    <p><code>Exura::environment(['mode' =&gt; …])</code> switches exuraphp between development and production. What each mode changes is still being decided. The page calls <code>api/</code> and checks each answer.</p>
     <ul expect></ul>
   </header>
 
   <main>
-    <div flex="wrap" style="gap:1rem">
-      <exura-cart><div ring="b:full b:default-3" size="p:2">cart: <strong items>{{count}}</strong> item(s)</div></exura-cart>
-      <exura-shop><div ring="b:full b:default-3" size="p:2">shop: <button button="primary sm" onclick="shop.buy()">buy</button> sold <strong sold>{{sold}}</strong></div></exura-shop>
-    </div>
+    <p text="default">Every answer of <code>api/index.php</code>, in order:</p>
+    <div log></div>
   </main>
-
-  <script src="/core/exura.js"></script>
   <script src="/index.js"></script>
-
 </body>
 </html>

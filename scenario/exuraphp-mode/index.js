@@ -1,8 +1,12 @@
+// show a check in the header: ✓ when it holds, ✗ (red) when it does not
+function expect(label, ok) {
+  const li = document.createElement("li");
+  li.textContent = label;
+  li.setAttribute(ok ? "ok" : "fail", "");
+  document.querySelector("[expect]").append(li);
+  if (!ok) console.error("scenario: " + label);
+}
 
-// development | production
-Exura.environment({
-  "mode": "development"
-});
 
 // call the API of this scenario; resolves to { status, json }
 async function call(method, route, body, type = 'json') {
@@ -20,5 +24,15 @@ async function call(method, route, body, type = 'json') {
   return { status: response.status, json, headers: response.headers };
 }
 
-let r = await call('GET', 'hello');
+function show(method, route, status, text) {
+  const pre = document.createElement('pre');
+  pre.textContent = `${method} /api/${route} → ${status}\n${text}`;
+  document.querySelector('[log]').append(pre);
+}
+
+(async () => {
+  let r = await call('GET', 'mode');
+  expect('Exura::environment() exists', r.status === 200 && r.json.data.environment === true);
+  r = await call('GET', 'hello');
   expect('GET hello → 200 with data', r.status === 200 && r.json.data === 'hello');
+})();
