@@ -9,25 +9,35 @@
   <link rel="stylesheet" href="/assets/dev.css">
 </head>
 <body>
-  <div container size="py:3">
-    <p text="default">Grammar: <code>clip="e:NAME a:ANIMATION ef:EFFECT"</code>. The old forms <code>clip="NAME"</code>, <code>animate:NAME</code> and <code>effect:NAME</code> are marked for deprecation.</p>
+  <main dev-page>
+    <header dev-head>
+      <div dev-kicker>exuracss · exura-clip.css</div>
+      <h1>Clip</h1>
+      <p>Emoji icons as an attribute: <code dev-inline>clip="e:NAME a:ANIMATION ef:EFFECT"</code>. The old forms <code dev-inline>clip="NAME"</code>, <code dev-inline>animate:NAME</code> and <code dev-inline>effect:NAME</code> are marked for deprecation.</p>
+    </header>
 
     <section dev-specimen>
-      <h2 text="h4 bold">animation <span dev-code>a:*</span></h2>
-      <div id="animations" flex="wrap" style="gap:1rem"></div>
+      <h2>animation — a:*</h2>
+      <p>On <code dev-inline>e:rocket</code>.</p>
+      <div dev-demo><div id="animations" flex="wrap" style="gap:1rem"></div></div>
+      <pre dev-code>&lt;i clip="e:rocket a:bounce"&gt;&lt;/i&gt;</pre>
     </section>
 
     <section dev-specimen>
-      <h2 text="h4 bold">effect <span dev-code>ef:*</span></h2>
-      <div id="effects" flex="wrap" style="gap:1rem"></div>
+      <h2>effect — ef:*</h2>
+      <p>On <code dev-inline>e:star</code>.</p>
+      <div dev-demo><div id="effects" flex="wrap" style="gap:1rem"></div></div>
+      <pre dev-code>&lt;i clip="e:star ef:ghost"&gt;&lt;/i&gt;</pre>
     </section>
 
     <section dev-specimen>
-      <h2 text="h4 bold">emoji <span dev-code>e:*</span> <span id="count" text="default"></span></h2>
-      <input id="filter" type="search" placeholder="filter…">
-      <div id="emoji" flex="wrap" size="mt:1"></div>
+      <h2>emoji — e:* <span id="count" dev-label></span></h2>
+      <div dev-demo>
+        <input id="filter" type="search" placeholder="filter…">
+        <div id="emoji" flex="wrap" size="mt:1"></div>
+      </div>
     </section>
-  </div>
+  </main>
 
   <script>
     // list every clip from the built stylesheet itself
@@ -45,7 +55,7 @@
     const cell = (attr, label) => `
       <div text="center" style="width:6.5rem" title='clip="${attr}"'>
         <i clip="${attr}" style="font-size:2rem"></i>
-        <div dev-code text="ellipsis">${label}</div>
+        <div dev-label text="ellipsis">${label}</div>
       </div>`;
 
     document.getElementById('animations').innerHTML =

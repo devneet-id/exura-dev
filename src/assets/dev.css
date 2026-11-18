@@ -1,37 +1,169 @@
-/* exura-dev only: small helpers for showing specimens. Not part of exuracss. */
+/*
+ * exura-dev only — the look of the workbench itself (toolbar, frames, code, logs).
+ * Not part of exuracss. It never relies on exuracss tints, so a page stays
+ * readable whatever version `php exura` fetched; only the specimens use Exura.
+ * Colors come from exuracss variables that follow light / dark.
+ */
+:root {
+  --dev-line: rgba(142, 147, 166, .35);
+  --dev-soft: rgba(142, 147, 166, .12);
+  --dev-mute: #6b7084;
+  --dev-accent: #4360CF;
+}
+[dark] {
+  --dev-line: rgba(142, 147, 166, .3);
+  --dev-soft: rgba(142, 147, 166, .1);
+  --dev-mute: #9a9fb2;
+  --dev-accent: #7b93ec;
+}
+
+/* toolbar */
 [dev-bar] {
   position: sticky;
   top: 0;
   z-index: 10;
-  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: .6rem 1.25rem;
+  background-color: var(--color-white);
+  border-bottom: 1px solid var(--dev-line);
+  font-size: .9rem;
+}
+[dev-bar] a { color: inherit; text-decoration: none; }
+[dev-bar] [dev-brand] { font-weight: 700; color: var(--dev-accent); margin-right: auto; }
+[dev-bar] [dev-nav] { display: flex; gap: 1rem; }
+[dev-bar] [dev-nav] a { color: var(--dev-mute); }
+[dev-bar] [dev-nav] a:hover,
+[dev-bar] [dev-nav] a[aria-current] { color: var(--color-dark); }
+[dev-bar] button {
+  font: inherit;
+  font-size: .8rem;
+  padding: .3rem .7rem;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--dev-line);
+  cursor: pointer;
 }
 
-[dev-specimen] {
+/* page head */
+[dev-page] {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+[dev-head] {
   margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--dev-line);
 }
-
-[dev-specimen] > h2 {
-  margin-bottom: .75rem;
+[dev-head] [dev-kicker] {
+  font-size: .75rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--dev-accent);
+  font-weight: 700;
 }
+[dev-head] h1 { font-size: 2rem; font-weight: 700; margin: .25rem 0 .5rem; }
+[dev-head] p { color: var(--dev-mute); margin: 0; max-width: 46rem; }
 
-[dev-code] {
+/* one specimen: title, note, live demo, code */
+[dev-specimen] { margin-bottom: 2.75rem; }
+[dev-specimen] > h2 { font-size: 1.25rem; font-weight: 700; margin: 0 0 .25rem; }
+[dev-specimen] > p { color: var(--dev-mute); margin: 0 0 .75rem; }
+
+[dev-demo] {
+  position: relative;
+  padding: 1.5rem 1.25rem 1.25rem;
+  border: 1px solid var(--dev-line);
+  color: var(--color-dark);
+}
+[dev-demo]::before {
+  content: 'demo';
+  position: absolute;
+  top: -.6rem;
+  left: .75rem;
+  padding: 0 .4rem;
+  font-size: .7rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--dev-mute);
+  background-color: var(--color-white);
+}
+[dev-demo] + [dev-code],
+[dev-demo] + [dev-log] { border-top: none; }
+
+[dev-code],
+[dev-log] {
+  display: block;
+  margin: 0;
+  padding: .85rem 1.25rem;
   font-family: var(--font-code);
   font-size: .8rem;
-  opacity: .7;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  color: var(--color-dark);
+  background-color: var(--dev-soft);
+  border: 1px solid var(--dev-line);
+  overflow-x: auto;
+}
+[dev-log] { min-height: 4.5rem; }
+[dev-log]:empty::before { content: 'log is empty'; color: var(--dev-mute); }
+code[dev-inline] {
+  font-family: var(--font-code);
+  font-size: .85em;
+  padding: .05rem .3rem;
+  background-color: var(--dev-soft);
 }
 
+/* a value the demo shows (big and clear) */
+[dev-value] { font-size: 2rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+[dev-label] { font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--dev-mute); }
+
+/* layout specimens: a visible box */
 [dev-box] {
   min-height: 2.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-primary-2);
-  outline: 1px dashed var(--color-primary-5);
+  font-size: .85rem;
+  color: var(--color-dark);
+  background-color: rgba(67, 96, 207, .14);
+  outline: 1px dashed rgba(67, 96, 207, .55);
+}
+[dev-area] {
+  padding: .5rem;
+  border: 1px dashed var(--dev-line);
 }
 
-[dev-log] {
-  font-family: var(--font-code);
-  font-size: .8rem;
-  white-space: pre-wrap;
-  min-height: 3rem;
+/* hub tiles */
+[dev-tiles] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 1rem;
+}
+[dev-tile] {
+  padding: 1.25rem;
+  border: 1px solid var(--dev-line);
+  color: var(--color-dark);
+}
+[dev-tile] h2 { font-size: 1.15rem; font-weight: 700; margin: 0 0 .25rem; }
+[dev-tile] p { color: var(--dev-mute); font-size: .9rem; margin: 0 0 .75rem; }
+[dev-tile] ul { list-style: none; margin: 0; padding: 0; }
+[dev-tile] li + li { border-top: 1px solid var(--dev-line); }
+[dev-tile] a {
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  padding: .5rem 0;
+  color: inherit;
+  text-decoration: none;
+}
+[dev-tile] a::after { content: '→'; color: var(--dev-mute); margin-left: auto; }
+[dev-tile] a:hover { color: var(--dev-accent); }
+[dev-tile] a small { color: var(--dev-mute); font-size: .8rem; }
+
+@media (max-width: 640px) {
+  [dev-bar] [dev-nav] { display: none; }
+  [dev-head] h1 { font-size: 1.6rem; }
 }

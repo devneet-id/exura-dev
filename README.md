@@ -90,6 +90,6 @@ Both refuse to start while a file of `src/vessel/` is missing, and name the `php
 
 The test suite marks known issues as `todo`: they run and are reported, but do not fail the suite. Drop the `todo` once the package is fixed.
 
-- **exuracss 1.1.0** — `card="NAME:N"` (tints) always sets the text to `--color-fixed-light`, so light tints on a light page are white on white (contrast 1.08 for `primary:1`). Playground cards add `text="dark"` meanwhile.
+- **exuracss 1.1.0** — `card="NAME:N"` (tints) always sets the text to `--color-fixed-light`, so light tints on a light page are white on white (contrast 1.08 for `primary:1`). Fixed in AnwarAchilles/exuracss#1; the workbench's own frames (`src/assets/dev.css`) never use tints, so only the tint specimens show it.
 - **exuracss 1.1.0** — `* { transition: all .05s }` animates every property of every element; the CSS tests switch transitions off to read final styles.
 - **Rune 1.21.117** — `aether_exit()` ends every run with a bare `exit`, so a runite always exits 0. `cast` sets the real code from a shutdown function.

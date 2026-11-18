@@ -111,3 +111,13 @@ test('render() of a module without an element only warns', async () => {
   assert.equal(warned.length, 1);
   assert.match(warned[0], /ghost/);
 });
+
+test('request console renders and shows the API answer', async () => {
+  const { page, errors } = await openPage(browser, server.url + '/js/api.html');
+  assert.equal(await page.textContent('[data-status]'), 'ready');
+  await page.click('exura-request button[button="primary"]');
+  await page.waitForFunction(() => document.querySelector('[data-status]').textContent.includes('→ 200'));
+  assert.match(await page.textContent('[data-output]'), /"name": "exura"/);
+  assert.equal(await page.inputValue('exura-request input[name="route"]'), '/api/echo?name=exura', 'inputs survive the render');
+  assert.deepEqual(errors, []);
+});
