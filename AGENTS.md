@@ -1,6 +1,8 @@
 # Working in exura-dev
 
-For humans and AI agents. Knowledge of the series lives in [devneet-id/lore](https://github.com/devneet-id/lore) (`realms/exura/`); read it first.
+For humans and AI agents. Start with [WORKFLOW.md](WORKFLOW.md) — the roles of the repositories and the cycle explore → issue → develop → release — and [HANDOFF.md](HANDOFF.md) if it exists.
+
+Knowledge of the series lives in [devneet-id/lore](https://github.com/devneet-id/lore) (`realms/exura/`); read it first.
 
 ## Laws
 

@@ -7,6 +7,8 @@ The packages live in their own repositories. This repo fetches their released fi
 - **`exploration/`** — every component of the three packages, ready to read and copy, and a complete app (CRUD + API).
 - **`scenario/`** — one possibility per folder. There are no tests: if something is wrong, it shows in the scenario that uses it.
 
+How the series is developed — exura-dev for trying, the package repos for issues and releases: [WORKFLOW.md](WORKFLOW.md).
+
 Both runites are shaped with [Rune](https://github.com/devneet-id/rune).
 
 ## Layout
