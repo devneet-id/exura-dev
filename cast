@@ -1,15 +1,16 @@
 #!/usr/bin/env php
 <?php
-/**
+/*
  * E X U R A - D E V
- * The workbench of the Exura series — a runite.
+ * The development runite of this workbench.
+ *
+ * `php exura` fetches exuracss, exurajs and exuraphp into src/vessel/;
+ * this runite serves the playground (src/) and tests those files.
  *
  * Run this script using:
- *   $ php cast              the main hall: every cast with its echo
- *   $ php cast grimoire     read the runes of this runite
- *
- * The packages (packages/exuracss, exurajs, exuraphp) stay the source of truth:
- * this runite only calls them — their own `cast` builds them.
+ *   $ php cast
+ *   $ php cast serve --port=8080
+ *   $ php cast test --css
  */
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -17,20 +18,28 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 /**
  * I N V O C A T I O N
+ *
+ * Step 1 — Summon the runes:
+ * Import each module's manifest.
+ *
+ * Step 2 — Channel the energy:
+ * Initialize ether, essence, and entity.
+ *
+ * Note: Keep #sentinel markers if you're using Sentinel support.
  */
 use Rune\Aether\Manifest as Aether;
-use Rune\Whisper\Manifest as Whisper;
-use Rune\Weaver\Manifest as Weaver;
 use Rune\Chanter\Manifest as Chanter;
+use Rune\Weaver\Manifest as Weaver;
+use Rune\Whisper\Manifest as Whisper;
 use Rune\Forger\Manifest as Forger;
 use Rune\Keeper\Manifest as Keeper;
 use Rune\Specter\Manifest as Specter;
 #sentinel-manifest
 
 Aether::ether()::essence()::entity();
-Whisper::ether()::essence()::entity();
-Weaver::ether()::essence()::entity();
 Chanter::ether()::essence()::entity();
+Weaver::ether()::essence()::entity();
+Whisper::ether()::essence()::entity();
 Forger::ether()::essence()::entity();
 Keeper::ether()::essence()::entity();
 Specter::ether()::essence()::entity();
@@ -39,217 +48,142 @@ Specter::ether()::essence()::entity();
 
 
 /**
- * I N C A N T A T I O N
+ * E X U R A - D E V
+ *
+ * The settings of this runite.
+ *   EXURA_DEV_HOST   where the playground is served
+ *   EXURA_DEV_PORT   its port (--port changes it for one run)
+ *   EXURA_DEV_SUITE  the test suites, one folder each in tests/
  */
-Aether::begin();
-Chanter::begin();
-Keeper::begin();
+const EXURA_DEV_HOST = 'localhost';
+const EXURA_DEV_PORT = '8080';
+const EXURA_DEV_SUITE = ['php', 'js', 'css', 'integration'];
 
-// ✦ the workbench
-
-$EXURA_DEV = json_decode(Forger::item(__DIR__ . '/exura-dev.json'), true);
+// the files the playground needs, and the `php exura` cast that fetches each
+const EXURA_DEV_VESSEL = [
+  'exura.css'=> 'php exura css',
+  'exura-clip.css'=> 'php exura css --part=clip',
+  'exura.js'=> 'php exura js',
+  'exura.php'=> 'php exura php',
+];
 
 // Rune ends every run with a bare `exit` (aether_exit), so the exit code is always 0.
-// Casts mark a failure here; a shutdown function hands it to the shell (CI reads it).
+// A cast marks a failure here; a shutdown function hands it to the shell.
 $EXURA_DEV_EXIT = 0;
 register_shutdown_function(function() {
   global $EXURA_DEV_EXIT;
   if ($EXURA_DEV_EXIT) exit($EXURA_DEV_EXIT);
 });
 
-function exura_dev_fail(): bool {
+function exura_dev_fail() {
   global $EXURA_DEV_EXIT;
   $EXURA_DEV_EXIT = 1;
   return false;
 }
 
-const SUITES = ['php', 'js', 'css', 'integration'];
-
-// run a command in a folder, its output straight to the terminal; returns the exit code
-function exura_dev_run(string $command, string $cwd): int {
-  $process = proc_open($command, [STDIN, STDOUT, STDERR], $pipes, $cwd);
-  return is_resource($process) ? proc_close($process) : 1;
+// one line of output: ok, fail or info
+function exura_dev_line( String $state, String $text ) {
+  $color = ['ok'=> 'success', 'fail'=> 'danger', 'info'=> 'secondary'][$state];
+  $icon = ['ok'=> 'success', 'fail'=> 'danger', 'info'=> 'info'][$state];
+  Whisper::echo("{{color-$color}}{{icon-$icon}}{{color-end}} $text{{nl}}");
 }
 
-// run a command and give back what it printed
-function exura_dev_capture(string $command, string $cwd): string {
-  $process = proc_open($command, [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes, $cwd);
-  if (!is_resource($process)) return '';
-  $output = stream_get_contents($pipes[1]);
-  proc_close($process);
-  return trim($output);
+// a spell with a value, or its default (a spell without a value is '1')
+function exura_dev_spell( String $key, String $default ) {
+  $value = Chanter::spell($key);
+  return ($value === false || $value === '' || $value === '1') ? $default : trim((string) $value);
 }
 
-// the packages chosen by spells (--css --js --php); none = all
-function exura_dev_packages(): array {
-  global $EXURA_DEV;
-  $chosen = [];
-  foreach ($EXURA_DEV['packages'] as $name => $package) {
-    if (Chanter::spell(substr($name, 5))) $chosen[$name] = $package;
-  }
-  return $chosen ?: $EXURA_DEV['packages'];
+// the vessel folder: EXURA_DIST of the exura runite
+function exura_dev_vessel() {
+  preg_match("#const EXURA_DIST = '([^']*)';#", Forger::item(__DIR__ . '/exura'), $m);
+  return $m[1] ?? 'src/vessel/';
 }
 
-// a package is there when its submodule is checked out (its cast exists)
-function exura_dev_ready(array $packages): bool {
+// every Exura file fetched? otherwise say which `php exura` cast brings it
+function exura_dev_ready() {
+  $vessel = exura_dev_vessel();
   $ready = true;
-  foreach ($packages as $name => $package) {
-    if (!is_file(__DIR__ . '/' . $package['path'] . '/cast')) {
-      Whisper::echo("{{color-danger}}{{icon-danger}} $name is empty — run: git submodule update --init{{nl}}");
+  foreach (EXURA_DEV_VESSEL as $file => $fetch) {
+    if (!is_file(__DIR__ . '/' . $vessel . $file)) {
+      exura_dev_line('fail', "$vessel$file is not fetched yet — run: $fetch");
       $ready = false;
     }
   }
   return $ready;
 }
 
-function exura_dev_bytes(string $size): int {
-  preg_match('/^([\d.]+)\s*(B|KB|MB)?$/i', trim($size), $m);
-  return (int) round(($m[1] ?? 0) * ['B' => 1, 'KB' => 1024, 'MB' => 1048576][strtoupper($m[2] ?? 'B')]);
-}
-
-function exura_dev_human(int $bytes): string {
-  return $bytes >= 1024 ? round($bytes / 1024, 2) . 'KB' : $bytes . 'B';
-}
-
-function exura_dev_title(string $text): void {
-  Whisper::echo("{{nl}} {{color-primary}}#  $text{{nl}}");
-}
 
 
+/**
+ * I N C A N T A T I O N
+ *
+ * This is your working space.
+ * Use begin() and end() to define the active logic scope.
+ */
+Aether::begin();
+Chanter::begin();
+Keeper::begin();
 
-Chanter::cast('setup', function() {
-  global $EXURA_DEV;
-  if (!exura_dev_ready($EXURA_DEV['packages'])) return exura_dev_fail();
 
-  exura_dev_title('S E T U P');
-  foreach ($EXURA_DEV['packages'] as $name => $package) {
-    Whisper::echo("{{color-secondary}} ♦ $name » composer install{{nl}}");
-    $code = exura_dev_run('composer install --no-interaction --quiet', __DIR__ . '/' . $package['path']);
-    if ($code !== 0) exura_dev_fail();
-    Whisper::echo($code === 0 ? "{{color-success}}{{icon-success}} $name{{nl}}" : "{{color-danger}}{{icon-danger}} $name{{nl}}");
+/* I · SERVE
+ * the playground (src/) with the Exura files of src/vessel/
+ * $ php cast serve
+ * $ php cast serve --port=9000 --public
+ * */
+Chanter::cast(
+  arg: 'serve --port --host --public',
+  echo: 'Serve the playground. --port=8080 --host=localhost --public',
+  execute: function() {
+    // read every spell first
+    $port = exura_dev_spell('port', EXURA_DEV_PORT);
+    $host = exura_dev_spell('host', EXURA_DEV_HOST);
+    $public = Chanter::spell('public') !== false;
+    if (!exura_dev_ready()) return exura_dev_fail();
+
+    Specter::devserver([
+      'host'=> $host,
+      'port'=> $port,
+      'mode'=> $public ? 'public' : 'private',
+      'path'=> __DIR__ . '/src',
+      'file'=> __DIR__ . '/src/router.php',
+    ]);
   }
-  Whisper::echo('{{color-secondary}} ♦ exura-dev » npm install (Playwright, for the tests){{nl}}');
-  $code = exura_dev_run('npm install --no-audit --no-fund', __DIR__);
-  if ($code !== 0) exura_dev_fail();
-  Whisper::echo($code === 0 ? '{{color-success}}{{icon-success}} npm{{nl}}' : '{{color-danger}}{{icon-danger}} npm{{nl}}');
-  Whisper::echo('{{color-info}}{{icon-info}} First time on this machine? Also: npx playwright install chromium{{nl}}');
-  return true;
-}, 'Install what building and testing need: composer in every package, npm here.');
+);
 
 
+/* II · TEST
+ * node:test + Playwright against the playground, one suite per folder of tests/
+ * $ php cast test                   every suite
+ * $ php cast test --css --js        some of them
+ * [i]INFO: a failing test makes the run exit 1
+ * */
+Chanter::cast(
+  arg: 'test --php --js --css --integration',
+  echo: 'Test the fetched Exura files. --php --js --css --integration (none = all)',
+  execute: function() {
+    // read every spell first
+    $suites = array_values(array_filter(EXURA_DEV_SUITE, fn($suite) => Chanter::spell($suite) !== false));
+    $suites = $suites ?: EXURA_DEV_SUITE;
+    if (!exura_dev_ready()) return exura_dev_fail();
 
-Chanter::cast('serve --port --host --public', function() {
-  global $EXURA_DEV;
-  $port   = Chanter::spell('port');
-  $host   = Chanter::spell('host');
-  $public = Chanter::spell('public');
-  if (!exura_dev_ready($EXURA_DEV['packages'])) return exura_dev_fail();
+    exura_dev_line('info', 'Exura of ' . exura_dev_vessel() . ' » ' . implode(', ', $suites));
+    $files = implode(' ', array_map(fn($suite) => escapeshellarg("tests/$suite/**/*.test.mjs"), $suites));
+    $process = proc_open("node --test --test-reporter=spec $files", [STDIN, STDOUT, STDERR], $pipes, __DIR__);
+    $code = is_resource($process) ? proc_close($process) : 1;
 
-  Specter::devserver([
-    'host' => ($host && $host !== '1') ? $host : $EXURA_DEV['serve']['host'],
-    'port' => ($port && $port !== '1') ? $port : $EXURA_DEV['serve']['port'],
-    'mode' => $public ? 'public' : 'private',
-    'path' => __DIR__ . '/playground',
-    'file' => __DIR__ . '/playground/router.php',
-  ]);
-}, 'Playground with the packages\' dist/. --port=8080 --host=localhost --public');
-
-
-
-Chanter::cast('build --css --js --php', function() {
-  $packages = exura_dev_packages();
-  if (!exura_dev_ready($packages)) return exura_dev_fail();
-
-  $failed = 0;
-  foreach ($packages as $name => $package) {
-    exura_dev_title(implode(' ', str_split(strtoupper("build $name"))));
-    $cwd = __DIR__ . '/' . $package['path'];
-    if (!is_dir("$cwd/vendor")) {
-      Whisper::echo("{{color-danger}}{{icon-danger}} $name has no vendor/ — run: php cast setup{{nl}}");
-      $failed++;
-      continue;
+    if ($code !== 0) {
+      exura_dev_line('fail', 'Tests failed');
+      return exura_dev_fail();
     }
-    foreach ($package['build'] as $step) {
-      Whisper::echo("{{color-secondary}} ♦ $step{{nl}}");
-      if (exura_dev_run($step, $cwd) !== 0) $failed++;
-    }
+    exura_dev_line('ok', 'Tests passed');
+    return true;
   }
-  return $failed === 0 ?: exura_dev_fail();
-}, 'Build dist/ through each package\'s own cast. --css --js --php (none = all)');
+);
 
 
-
-Chanter::cast('test --php --js --css --integration', function() {
-  $suites = array_values(array_filter(SUITES, fn($suite) => Chanter::spell($suite)));
-  $suites = $suites ?: SUITES;
-
-  exura_dev_title('T E S T » ' . implode(', ', $suites));
-  $files = array_map(fn($suite) => escapeshellarg("tests/$suite/**/*.test.mjs"), $suites);
-  $code  = exura_dev_run('node --test --test-reporter=spec ' . implode(' ', $files), __DIR__);
-
-  Whisper::echo($code === 0
-    ? '{{color-success}}{{icon-success}} Tests passed{{nl}}'
-    : '{{color-danger}}{{icon-danger}} Tests failed{{nl}}');
-  return $code === 0 ?: exura_dev_fail();
-}, 'Run the tests (node:test + Playwright). --php --js --css --integration (none = all)');
-
-
-
-Chanter::cast('size', function() {
-  global $EXURA_DEV;
-  if (!exura_dev_ready($EXURA_DEV['packages'])) return exura_dev_fail();
-
-  exura_dev_title('S I Z E » raw · gzip / budget');
-  $row  = '{{icon}} {{file}} {{raw}} · {{gzip}} / {{budget}}{{note}}{{nl}}';
-  $over = 0;
-  foreach ($EXURA_DEV['packages'] as $name => $package) {
-    Whisper::echo("{{color-info}} ♦ $name{{nl}}");
-    foreach ($package['budget'] as $file => $budget) {
-      $path = __DIR__ . '/' . $package['path'] . '/' . $file;
-      if (!is_file($path)) {
-        Whisper::echo("{{color-danger}}{{icon-danger}} $file is missing{{nl}}");
-        $over++;
-        continue;
-      }
-      $gzip = strlen(gzencode(Forger::item($path), 9));
-      $fits = $gzip <= exura_dev_bytes($budget['gzip']);
-      if (!$fits) $over++;
-      Whisper::echo(Weaver::bind($row, [
-        'icon'   => $fits ? '{{color-success}}{{icon-success}}{{color-end}}' : '{{color-danger}}{{icon-danger}}{{color-end}}',
-        'file'   => str_pad($file, 22),
-        'raw'    => str_pad(exura_dev_human(filesize($path)), 9, ' ', STR_PAD_LEFT),
-        'gzip'   => str_pad(exura_dev_human($gzip), 8),
-        'budget' => $budget['gzip'],
-        'note'   => $fits ? '' : '  {{color-danger}}over budget',
-      ]));
-    }
-  }
-  return $over === 0 ?: exura_dev_fail();
-}, 'dist/ size, raw and gzip, against the budget in exura-dev.json.');
-
-
-
-Chanter::cast('status', function() {
-  global $EXURA_DEV;
-  exura_dev_title('S T A T U S');
-  foreach ($EXURA_DEV['packages'] as $name => $package) {
-    $cwd = __DIR__ . '/' . $package['path'];
-    if (!is_file("$cwd/cast")) {
-      Whisper::echo("{{color-danger}}{{icon-danger}} $name is empty — run: git submodule update --init{{nl}}");
-      continue;
-    }
-    preg_match("/const VERSION = '([^']*)'/", Forger::item("$cwd/cast"), $version);
-    $changes = exura_dev_capture('git status --porcelain', $cwd);
-    $count   = $changes === '' ? 0 : count(explode("\n", $changes));
-    Whisper::echo(Weaver::bind('{{color-info}} ♦ {{name}}{{color-end}} v{{version}} [{{branch}}] {{state}}{{nl}}', [
-      'name'    => str_pad($name, 9),
-      'version' => $version[1] ?? '?',
-      'branch'  => exura_dev_capture('git rev-parse --abbrev-ref HEAD', $cwd),
-      'state'   => $count ? "{{color-warning}}$count changed" : '{{color-success}}clean',
-    ]));
-    Whisper::echo('{{color-secondary}}    ≈ ' . exura_dev_capture('git log -1 --format="%h %s"', $cwd) . '{{nl}}');
-  }
-}, 'Branch, uncommitted changes and version of each package.');
+// Three files fetched by exura,
+// served and tried by cast.
 
 #sentinel-codex
 Keeper::end();

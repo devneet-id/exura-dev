@@ -2,12 +2,13 @@
 /**
  * Router for `php -S` (started by `php cast serve`).
  *
- *   /pkg/<package>/<file>   a file from packages/<package>/dist (e.g. /pkg/exuracss/exura.min.css)
- *   /api/<route>            the exuraphp playground (api/index.php), as if served at /api/index.php
- *   anything else           a static file of playground/, or index.html of a folder
+ *   /vessel/<file>   an Exura file fetched by `php exura` (its EXURA_DIST folder)
+ *   /api/<route>     the exuraphp playground (api/index.php), as if served at /api/index.php
+ *   anything else    a static file of src/, or index.html of a folder
  */
 
 $root = __DIR__;
+$repo = dirname($root);
 $path = rawurldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '/');
 
 $types = [
@@ -28,15 +29,23 @@ $send = function (string $file) use ($types) {
   return true;
 };
 
-// package dist files
-if (preg_match('#^/pkg/(exuracss|exurajs|exuraphp)/(.+)$#', $path, $m)) {
-  $dist = realpath(dirname($root) . "/packages/{$m[1]}/dist");
-  $file = $dist ? realpath("$dist/{$m[2]}") : false;
-  if ($file && str_starts_with($file, $dist . DIRECTORY_SEPARATOR) && is_file($file)) {
+// the Exura files: wherever `php exura` puts them (EXURA_DIST in the exura runite)
+if (str_starts_with($path, '/vessel/')) {
+  preg_match("#const EXURA_DIST = '([^']*)';#", (string) @file_get_contents("$repo/exura"), $m);
+  $vessel = realpath($repo . '/' . ($m[1] ?? 'src/vessel/'));
+  $file = $vessel ? realpath($vessel . '/' . substr($path, 8)) : false;
+  if ($file && str_starts_with($file, $vessel . DIRECTORY_SEPARATOR) && is_file($file)) {
     return $send($file);
   }
+  $fetch = [
+    'exura.css'      => 'php exura css',
+    'exura-clip.css' => 'php exura css --part=clip',
+    'exura.js'       => 'php exura js',
+    'exura.php'      => 'php exura php',
+  ][substr($path, 8)] ?? 'php exura setup';
   http_response_code(404);
-  echo "Not in packages/{$m[1]}/dist: {$m[2]} (run: php cast build --" . substr($m[1], 5) . ")";
+  header('Content-Type: text/plain; charset=utf-8');
+  echo "Not fetched yet: {$path} (run: $fetch)";
   return true;
 }
 
@@ -49,7 +58,7 @@ if ($path === '/api' || str_starts_with($path, '/api/')) {
   return true;
 }
 
-// static playground files
+// static files of src/
 $file = realpath($root . $path);
 if ($file && is_dir($file)) {
   if (!str_ends_with($path, '/')) {

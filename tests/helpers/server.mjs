@@ -1,5 +1,5 @@
-// Starts the playground (php -S + router.php) on a free port for a test file.
-// Notes are stored in a temporary folder, so tests never touch playground/.data.
+// Starts the playground (src/) (php -S + router.php) on a free port for a test file.
+// Notes are stored in a temporary folder, so tests never touch src/.data.
 import { spawn } from 'node:child_process';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { createServer } from 'node:net';
@@ -22,8 +22,8 @@ const freePort = () => new Promise((resolve, reject) => {
 export async function startServer() {
   const port = await freePort();
   const data = mkdtempSync(join(tmpdir(), 'exura-dev-'));
-  const php = spawn('php', ['-S', `127.0.0.1:${port}`, join(ROOT, 'playground', 'router.php')], {
-    cwd: join(ROOT, 'playground'),
+  const php = spawn('php', ['-S', `127.0.0.1:${port}`, join(ROOT, 'src', 'router.php')], {
+    cwd: join(ROOT, 'src'),
     env: { ...process.env, EXURA_DEV_DATA: data },
     stdio: ['ignore', 'ignore', 'pipe'],
   });
