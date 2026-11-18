@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>exuracss-table</title>
+  <link rel="stylesheet" href="/core/exura.css">
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <header scenario>
+    <small>scenario · exuracss-table</small>
+    <h1>Tables and lists</h1>
+    <p>Every line style of <code>table</code> and <code>list</code>.</p>
+    <ul expect>
+      <li><code>ring</code>: lines everywhere · <code>ring:x</code>: vertical only · <code>ring:y</code>: horizontal only</li>
+      <li><code>ring:primary-5</code> colors the lines</li>
+      <li><code>list="dir:x"</code> lays the items in a row</li>
+      <li>long tables scroll inside their box on phones</li>
+    </ul>
+  </header>
+
+  <main>
+    <h2 text="h6 bold" size="mt:1">table="ring"</h2>
+    <div misc="ox:auto">
+      <table table="ring">
+        <thead><tr><th>Package</th><th>Language</th><th>Role</th><th text="end">Size</th></tr></thead>
+        <tbody>
+          <tr><td>exuracss</td><td>CSS</td><td>styling</td><td text="end">25 KB</td></tr>
+          <tr><td>exurajs</td><td>JavaScript</td><td>reactive modules</td><td text="end">2 KB</td></tr>
+          <tr><td>exuraphp</td><td>PHP</td><td>JSON API</td><td text="end">2 KB</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 text="h6 bold" size="mt:1">table="ring:x"</h2>
+    <div misc="ox:auto">
+      <table table="ring:x">
+        <thead><tr><th>Package</th><th>Language</th><th>Role</th><th text="end">Size</th></tr></thead>
+        <tbody>
+          <tr><td>exuracss</td><td>CSS</td><td>styling</td><td text="end">25 KB</td></tr>
+          <tr><td>exurajs</td><td>JavaScript</td><td>reactive modules</td><td text="end">2 KB</td></tr>
+          <tr><td>exuraphp</td><td>PHP</td><td>JSON API</td><td text="end">2 KB</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 text="h6 bold" size="mt:1">table="ring:y"</h2>
+    <div misc="ox:auto">
+      <table table="ring:y">
+        <thead><tr><th>Package</th><th>Language</th><th>Role</th><th text="end">Size</th></tr></thead>
+        <tbody>
+          <tr><td>exuracss</td><td>CSS</td><td>styling</td><td text="end">25 KB</td></tr>
+          <tr><td>exurajs</td><td>JavaScript</td><td>reactive modules</td><td text="end">2 KB</td></tr>
+          <tr><td>exuraphp</td><td>PHP</td><td>JSON API</td><td text="end">2 KB</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h2 text="h6 bold" size="mt:1">table="ring ring:primary-5"</h2>
+    <div misc="ox:auto">
+      <table table="ring ring:primary-5">
+        <thead><tr><th>Package</th><th>Language</th><th>Role</th><th text="end">Size</th></tr></thead>
+        <tbody>
+          <tr><td>exuracss</td><td>CSS</td><td>styling</td><td text="end">25 KB</td></tr>
+          <tr><td>exurajs</td><td>JavaScript</td><td>reactive modules</td><td text="end">2 KB</td></tr>
+          <tr><td>exuraphp</td><td>PHP</td><td>JSON API</td><td text="end">2 KB</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div flex="wrap" size="mt:2" style="gap:2rem">
+      <div flex="1"><h2 text="h6 bold">list="ring:y ring:default-3"</h2><ul list="ring:y ring:default-3"><li>first</li><li>second</li><li>third</li></ul></div>
+      <div flex="1"><h2 text="h6 bold">list="dir:x ring:primary-5"</h2><ul list="dir:x ring:primary-5"><li>first</li><li>second</li><li>third</li></ul></div>
+    </div>
+  </main>
+
+</body>
+</html>

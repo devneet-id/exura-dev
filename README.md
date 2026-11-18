@@ -1,11 +1,11 @@
 # E X U R A · D E V
 
-The **workbench** of the Exura series — where **exuracss**, **exurajs** and **exuraphp** are tried and tested.
+The **workshop** of the Exura series — where **exuracss**, **exurajs** and **exuraphp** are explored and tried, one possibility at a time.
 
-The packages live in their own repositories. This repo fetches their released files with `php exura`, then serves and tests them with `php cast`:
+The packages live in their own repositories. This repo fetches their released files into `core/` with `php exura`, and serves a folder that uses them with `php cast`:
 
-- a **playground** (`src/`) that shows every feature of the three packages, alone and together,
-- **tests** that drive the playground in a real browser and over HTTP.
+- **`exploration/`** — every component of the three packages, ready to read and copy, and a complete app (CRUD + API).
+- **`scenario/`** — one possibility per folder. There are no tests: if something is wrong, it shows in the scenario that uses it.
 
 Both runites are shaped with [Rune](https://github.com/devneet-id/rune).
 
@@ -13,36 +13,35 @@ Both runites are shaped with [Rune](https://github.com/devneet-id/rune).
 
 ```
 exura-dev/
-├── exura                   runite — fetch Exura from the CDN into src/vessel/ (a tag or a branch)
-├── cast                    runite — development: serve and test
-├── composer.json           devneet/rune
-├── package.json            playwright (tests only)
-├── src/                    the playground
-│   ├── vessel/             exura.css, exura-clip.css, exura.js, exura.php — fetched, not committed
-│   ├── router.php          /vessel/* → the fetched files, /api/* → api/index.php
-│   ├── css/                components, layout, text & ring, color balancing, clip
-│   ├── js/                 module/state/effect, template, store, watch, router, request console
-│   ├── api/index.php       exuraphp endpoints (hello, echo, user/*, notes, fail, warn, fallback)
-│   ├── apps/notes/         the three packages together
-│   └── assets/             the workbench's own toolbar and helpers (not part of any package)
-└── tests/                  node:test + Playwright
-    ├── php/                exuraphp over HTTP
-    ├── js/                 exurajs in the browser
-    ├── css/                exuracss computed styles
-    ├── integration/        apps/notes end to end
-    └── helpers/            server (php -S on a free port) and browser
+├── exura                 runite — fetch Exura from the CDN into core/ (a tag or a branch)
+├── cast                  runite — the development server: serve exploration/ or a scenario
+├── router.php            the router cast gives the server: /core/* and front controllers
+├── core/                 exura.css · exura-clip.css · exura.js · exura.php (fetched, not committed)
+├── exploration/
+│   ├── index.html        everything, listed
+│   ├── exuracss/         components · layout · text & ring · color balancing · clip
+│   ├── exurajs/          module/state/effect · template · store · watch · router
+│   ├── exuraphp/         request console + api/ with every feature as a route
+│   ├── app/              notes: a complete CRUD app and its API (api/)
+│   └── assets/           the look of the exploration pages (not part of Exura)
+└── scenario/
+    ├── README.md         every scenario and what it proves
+    ├── exuracss-grid/    index.html · index.css
+    ├── exurajs-counter/  index.html · index.css · index.js
+    ├── exuraphp-routing/ index.html · index.css · index.js · api/index.php
+    └── …
 ```
 
 ## Start
 
-Requirements: **PHP 8.1+**, **Composer**, **Node 22+**.
+Requirements: **PHP 8.1+** and **Composer**.
 
 ```bash
 composer install
 ```
 
 ```bash
-php exura setup --dist=src/vessel/ --tags=1.1.0 --install
+php exura setup --dist=core/ --tags=1.1.0 --install
 ```
 
 ```bash
@@ -50,46 +49,42 @@ php exura css --part=clip
 ```
 
 ```bash
-php cast serve
+php cast exploration
 ```
 
-Open http://localhost:8080. For the tests, once per machine:
-
-```bash
-npm install && npx playwright install chromium
-```
+Open http://localhost:8080.
 
 ## Fetch — `php exura`
 
 | Cast | What it does |
 |---|---|
-| `php exura setup --dist=src/vessel/ --tags=1.1.0 --install` | write the settings into the runite, then fetch css, js and php |
+| `php exura setup --dist=core/ --tags=1.1.0 --install` | write the settings into the runite, then fetch css, js and php |
 | `php exura css` · `php exura css --part=clip` | exura.css · exura-clip.css |
 | `php exura js` · `php exura php` | exura.js · exura.php |
 | `php exura css --remove` | remove a file (same for `js`, `php`, `--part=clip`) |
 
-`--tags` takes a tag (`1.1.0`) or a branch (`1.x` = the latest of 1.x). Keep `--dist=src/vessel/`: the playground serves that folder as `/vessel/`.
+`--tags` takes a tag (`1.1.0`) or a branch (`1.x` = the latest of 1.x). Keep `--dist=core/`: every page links `/core/…`.
 
-## Develop — `php cast`
+## Serve — `php cast`
 
-| Cast | What it does |
+| Cast | What it serves |
 |---|---|
-| `php cast serve --port=8080 --host=localhost --public` | the playground (Specter devserver) |
-| `php cast test --php --js --css --integration` | the tests (no spell = all); a failure exits 1 |
+| `php cast exploration` | `exploration/` |
+| `php cast scenario --name=exuracss-grid` | one scenario; without `--name` it lists them and asks |
+| `php cast serve --path=<folder>` | any folder of this repo |
 
-Both refuse to start while a file of `src/vessel/` is missing, and name the `php exura` cast that fetches it.
+Every cast takes `--port=8080`, `--host=localhost` and `--public`. The folder becomes the site root, `core/` is served beside it as `/core/`, and a path that is not a file goes to the nearest `index.php` (exuraphp routes) or else `index.html` (exurajs router). A missing file of `core/` is named with the `php exura` cast that fetches it.
 
 ## The cycle of a change
 
-1. Change a package in its own repository and release it (a tag), or push it to its branch.
+1. Change a package in its own repository; release a tag, or push to its branch.
 2. Here: `php exura setup --tags=<tag or branch> --install` (and `php exura css --part=clip`).
-3. `php cast serve` to look, `php cast test` to prove.
-4. A new feature gets a playground page in `src/` and a test in `tests/`.
+3. `php cast exploration` and the scenarios that touch the change: every page says what must hold.
+4. Something new or broken that no page shows? Add a scenario (see [scenario/README.md](scenario/README.md)), or a section to `exploration/`.
 
-## Known issues found here
+## Known issues seen here
 
-The test suite marks known issues as `todo`: they run and are reported, but do not fail the suite. Drop the `todo` once the package is fixed.
-
-- **exuracss 1.1.0** — `card="NAME:N"` (tints) always sets the text to `--color-fixed-light`, so light tints on a light page are white on white (contrast 1.08 for `primary:1`). Fixed in AnwarAchilles/exuracss#1; the workbench's own frames (`src/assets/dev.css`) never use tints, so only the tint specimens show it.
-- **exuracss 1.1.0** — `* { transition: all .05s }` animates every property of every element; the CSS tests switch transitions off to read final styles.
-- **Rune 1.21.117** — `aether_exit()` ends every run with a bare `exit`, so a runite always exits 0. `cast` sets the real code from a shutdown function.
+- **exuracss 1.1.0** — `card="NAME:N"` keeps one text color for all ten shades: light tints carry white text on a light page, some dark-page tints dark text. Visible in `scenario/exuracss-tint` and `exploration/exuracss/color.html`. Fixed in AnwarAchilles/exuracss#1.
+- **exuracss 1.1.0** — `strong, em { color: #dc3b3b }`: every `<strong>` and `<em>` is red.
+- **exuracss 1.1.0** — `* { transition: all .05s }` animates every property of every element.
+- **Rune 1.21.117** — `aether_exit()` ends every run with a bare `exit`, so a runite always exits 0; `cast` sets the real code from a shutdown function.

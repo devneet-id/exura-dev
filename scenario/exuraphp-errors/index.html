@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>exuraphp-errors</title>
+  <link rel="stylesheet" href="/core/exura.css">
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <header scenario>
+    <small>scenario · exuraphp-errors</small>
+    <h1>Errors become JSON</h1>
+    <p>An exception, a warning, an undefined function and a notice inside a route. Errors answer 500 JSON; a notice is only traced.</p>
+    <ul expect></ul>
+  </header>
+
+  <main>
+    <p text="default">Every answer of <code>api/index.php</code>, in order:</p>
+    <div log></div>
+  </main>
+  <script src="/index.js"></script>
+</body>
+</html>

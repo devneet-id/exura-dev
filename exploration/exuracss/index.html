@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>css · components</title>
+  <link rel="stylesheet" href="/core/exura.css">
+  <link rel="stylesheet" href="/assets/dev.css">
+</head>
+<body>
+  <main dev-page>
+    <header dev-head>
+      <div dev-kicker>exuracss</div>
+      <h1>Components</h1>
+      <p>Buttons, cards, forms, lists and tables — each styled by one attribute whose value reads like a sentence.</p>
+    </header>
+
+    <section dev-specimen id="button">
+      <h2>button</h2>
+      <p>A color, and optionally a size: <code dev-inline>sm</code>, <code dev-inline>lg</code>. Works on <code dev-inline>&lt;a&gt;</code> too.</p>
+      <div dev-demo>
+        <div flex="wrap a:middle" style="gap:.5rem">
+          <button button="primary">primary</button>
+          <button button="secondary">secondary</button>
+          <button button="default">default</button>
+          <button button="dark">dark</button>
+          <button button="light">light</button>
+          <button button="white">white</button>
+          <button button="black">black</button>
+          <button button="none">none</button>
+        </div>
+        <div flex="wrap a:middle" size="mt:1" style="gap:.5rem">
+          <button button="primary sm">primary sm</button>
+          <button button="primary">primary</button>
+          <button button="primary lg">primary lg</button>
+          <a href="#button" button="secondary">a[button]</a>
+        </div>
+      </div>
+      <pre dev-code>&lt;button button="primary"&gt;Save&lt;/button&gt;
+&lt;button button="primary lg"&gt;Save&lt;/button&gt;
+&lt;a href="#" button="secondary"&gt;Link&lt;/a&gt;</pre>
+    </section>
+
+    <section dev-specimen id="card">
+      <h2>card</h2>
+      <p>A solid color, or a tint <code dev-inline>NAME:1</code>–<code dev-inline>NAME:10</code> that blends with the page. All tints side by side: <a href="/exuracss/color.html">Color balancing</a>.</p>
+      <div dev-demo>
+        <div flex="wrap" style="gap:1rem">
+          <div flex="1" card="primary" style="min-width:12rem">card="primary"</div>
+          <div flex="1" card="secondary" style="min-width:12rem">card="secondary"</div>
+          <div flex="1" card="light lg" style="min-width:12rem">card="light lg"</div>
+          <div flex="1" card="dark sm" style="min-width:12rem">card="dark sm"</div>
+          <div flex="1" card="primary:2" ring="b:full b:primary-5" style="min-width:12rem">card="primary:2" + ring</div>
+          <div flex="1" card="default:1" style="min-width:12rem">card="default:1"</div>
+        </div>
+      </div>
+      <pre dev-code>&lt;div card="primary"&gt;…&lt;/div&gt;
+&lt;div card="primary:2" ring="b:full b:primary-5"&gt;…&lt;/div&gt;</pre>
+    </section>
+
+    <section dev-specimen id="form">
+      <h2>form</h2>
+      <p>Inputs, selects and textareas are styled without attributes.</p>
+      <div dev-demo>
+        <form flex="wrap" style="gap:0 1rem" onsubmit="return false">
+          <div flex="1" style="min-width:14rem">
+            <label>Text</label>
+            <input type="text" placeholder="type here">
+          </div>
+          <div flex="1" style="min-width:14rem">
+            <label>Email</label>
+            <input type="email" placeholder="you@example.com">
+          </div>
+          <div size="w:full" flex="wrap" style="gap:0 1rem">
+            <div flex="1" style="min-width:14rem">
+              <label>Select</label>
+              <select><option>one</option><option>two</option></select>
+            </div>
+            <div flex="1 a:middle" style="min-width:14rem; gap:.5rem">
+              <input type="number" value="3">
+              <input type="range">
+              <input type="color" value="#4360CF">
+            </div>
+          </div>
+          <div size="w:full">
+            <label>Textarea</label>
+            <textarea rows="3">Notes…</textarea>
+          </div>
+          <div size="w:full" flex="wrap a:middle" style="gap:1rem">
+            <label><input type="checkbox" checked> checkbox</label>
+            <label><input type="radio" name="r" checked> radio a</label>
+            <label><input type="radio" name="r"> radio b</label>
+            <button button="primary" size="ms:auto">Submit</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section dev-specimen id="list">
+      <h2>list</h2>
+      <p>Lines between items (<code dev-inline>ring:y</code>, with a color), or items in a row (<code dev-inline>dir:x</code>).</p>
+      <div dev-demo>
+        <div flex="wrap" style="gap:2rem">
+          <ul flex="1" list="ring:y ring:default-3" style="min-width:14rem">
+            <li>first</li>
+            <li>second</li>
+            <li>third</li>
+          </ul>
+          <ul flex="1" list="dir:x ring:primary-5" style="min-width:14rem">
+            <li>first</li>
+            <li>second</li>
+            <li>third</li>
+          </ul>
+        </div>
+      </div>
+      <pre dev-code>&lt;ul list="ring:y ring:default-3"&gt;…&lt;/ul&gt;
+&lt;ul list="dir:x"&gt;…&lt;/ul&gt;</pre>
+    </section>
+
+    <section dev-specimen id="table">
+      <h2>table</h2>
+      <p>Lines: <code dev-inline>ring</code>, <code dev-inline>ring:x</code>, <code dev-inline>ring:y</code>, with a color such as <code dev-inline>ring:primary-5</code>.</p>
+      <div dev-demo>
+        <table table="ring">
+          <thead><tr><th>Package</th><th>Language</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td>exuracss</td><td>CSS</td><td>semantic styling</td></tr>
+            <tr><td>exurajs</td><td>JavaScript</td><td>reactive frontend</td></tr>
+            <tr><td>exuraphp</td><td>PHP</td><td>HTTP API</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <pre dev-code>&lt;table table="ring"&gt;…&lt;/table&gt;</pre>
+    </section>
+  </main>
+  <script src="/assets/dev.js"></script>
+</body>
+</html>

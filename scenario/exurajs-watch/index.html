@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>exurajs-watch</title>
+  <link rel="stylesheet" href="/core/exura.css">
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <header scenario>
+    <small>scenario · exurajs-watch</small>
+    <h1>Watch: once, on the viewport</h1>
+    <p><code>watch(selector, fn)</code> runs <code>fn</code> the first time the element is seen. Scroll down and back up.</p>
+    <ul expect></ul>
+  </header>
+
+  <main>
+    <exura-lazy>
+      <div style="height:110vh" flex="j:center a:middle" text="default">scroll ↓</div>
+      <div box id="one" ring="b:full b:default-3" size="p:3" text="center">waiting…</div>
+      <div style="height:70vh"></div>
+      <div box id="two" ring="b:full b:default-3" size="p:3" text="center">waiting…</div>
+      <div style="height:40vh"></div>
+    </exura-lazy>
+  </main>
+  <script src="/core/exura.js"></script>
+  <script src="/index.js"></script>
+</body>
+</html>

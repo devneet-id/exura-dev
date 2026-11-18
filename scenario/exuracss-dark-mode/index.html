@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>exuracss-dark-mode</title>
+  <link rel="stylesheet" href="/core/exura.css">
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <header scenario>
+    <small>scenario · exuracss-dark-mode</small>
+    <h1>Dark mode by reversal</h1>
+    <p><code>dark</code> on any element swaps light ↔ dark and white ↔ black (with shades); <code>light</code> inside brings the normal pair back.</p>
+    <ul expect>
+      <li>the left panel is light, the right panel is dark</li>
+      <li>inside the dark panel, the nested <code>[light]</code> box is light again</li>
+      <li>buttons <code>dark</code> and <code>light</code> swap colors between the panels</li>
+      <li>text stays readable everywhere</li>
+    </ul>
+  </header>
+
+  <main>
+    <div flex="wrap" style="gap:1rem">
+      <section flex="1" panel>
+        <h2 text="h5 bold">no attribute</h2>
+        <p>Body text on the page color.</p>
+        <div flex="wrap" style="gap:.5rem"><button button="dark">dark</button><button button="light">light</button><button button="primary">primary</button></div>
+        <div card="dark" size="mt:1">card="dark"</div>
+        <div card="light" size="mt:1">card="light"</div>
+      </section>
+      <section flex="1" panel dark>
+        <h2 text="h5 bold">dark</h2>
+        <p>Body text on the reversed color.</p>
+        <div flex="wrap" style="gap:.5rem"><button button="dark">dark</button><button button="light">light</button><button button="primary">primary</button></div>
+        <div card="dark" size="mt:1">card="dark"</div>
+        <div card="light" size="mt:1">card="light"</div>
+        <div light panel size="mt:1">
+          <strong>[light] inside [dark]</strong>
+          <p>Back to the normal pair.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+</body>
+</html>
