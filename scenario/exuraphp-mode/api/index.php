@@ -8,16 +8,12 @@ if (!is_file("$dir/core/exura.php")) {
 }
 require "$dir/core/exura.php";
 
-// development | production
-// guarded: on a version without configure() the routes still answer and the page shows ✗
-if (method_exists('Exura', 'configure')) {
-  Exura::configure([
-    'mode' => 'development',
-  ]);
-}
+// development: the default — no configure() call
 
-Exura::module('GET', 'mode', fn() => ['data' => ['configure' => method_exists('Exura', 'configure')]]);
-
+// the same routes in both modes
+Exura::module('GET', 'settings', fn() => ['data' => method_exists('Exura', 'configure') ? Exura::configure() : null]);
 Exura::module('GET', 'hello', fn() => ['data' => 'hello']);
+Exura::module('GET', 'notice', function () { trigger_error('an old call', E_USER_DEPRECATED); return ['data' => 'ok']; });
+Exura::module('GET', 'boom', function () { throw new RuntimeException('the database is down'); });
 
 Exura::fallback();

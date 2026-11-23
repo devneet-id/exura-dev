@@ -11,12 +11,13 @@
   <header scenario>
     <small>scenario · exurajs-mode</small>
     <h1>Switch mode: development &amp; production</h1>
-    <p><code>Exura.configure({ mode })</code> overrides the settings of exurajs; <code>mode: 'production'</code> is meant to remove the trace output. What exactly each mode shows is still being decided.</p>
+    <p><code>Exura.configure({ mode })</code> rebases the settings of exurajs. <b>development</b> (the default) prints a banner, tracks every module, and warns about clashing names and missing elements. <b>production</b> prints nothing and catches every error — in an effect, a timer or a promise — and hands it to <code>onError</code>. The page runs development first, then switches to production.</p>
     <ul expect></ul>
   </header>
 
   <main>
-    <p text="default">mode set by this page: <strong mode></strong></p>
+    <p text="default">What exurajs wrote to the console, per mode:</p>
+    <div log></div>
   </main>
   <script src="/core/exura.js"></script>
   <script src="/index.js"></script>

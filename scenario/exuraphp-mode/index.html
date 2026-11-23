@@ -11,7 +11,7 @@
   <header scenario>
     <small>scenario · exuraphp-mode</small>
     <h1>Switch mode: development &amp; production</h1>
-    <p><code>Exura::configure(['mode' =&gt; …])</code> overrides the settings of exuraphp; <code>'mode' =&gt; 'production'</code> is meant to remove the trace from every answer. What exactly each mode shows is still being decided. The page calls <code>api/</code> and checks each answer.</p>
+    <p><code>Exura::configure(['mode' =&gt; …])</code> rebases the settings of exuraphp. <b>development</b> (the default) answers with the trace <code>"E X U R A - …"</code> — route, method, notices, time — and full errors (file, line). <b>production</b> answers without the trace and without paths: a 500 says only <code>Internal Server Error</code>. The same routes run in <code>api/</code> (development) and <code>api/production/</code>.</p>
     <ul expect></ul>
   </header>
 
