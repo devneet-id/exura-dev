@@ -8,19 +8,12 @@ if (!is_file("$dir/core/exura.php")) {
 }
 require "$dir/core/exura.php";
 
+// development: the default — no configure() call
 
-Exura::environment([
-  "mode"=> "development"
-]);
-
-
+// the same routes in both modes
+Exura::module('GET', 'settings', fn() => ['data' => method_exists('Exura', 'configure') ? Exura::configure() : null]);
 Exura::module('GET', 'hello', fn() => ['data' => 'hello']);
-
-Exura::module(['PUT', 'PATCH'], 'item', fn() => ['data' => ExuraEnvironment::getRequest()]);
-
-Exura::module('GET', 'user/*', function () {
-  $parts = explode('/', trim(ExuraEnvironment::getRoute(), '/'));
-  return ['data' => $parts[array_search('user', $parts) + 1] ?? null];
-});
+Exura::module('GET', 'notice', function () { trigger_error('an old call', E_USER_DEPRECATED); return ['data' => 'ok']; });
+Exura::module('GET', 'boom', function () { throw new RuntimeException('the database is down'); });
 
 Exura::fallback();

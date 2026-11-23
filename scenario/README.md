@@ -27,8 +27,10 @@ There are no tests here: **a scenario shows its own result**. The header of ever
 | `exurajs-list` | rendering a list through an effect and `{{{items}}}`, escaped titles | ✓ / ✗ |
 | `exurajs-router` | `router()` params at `/`, `/user/42`, `/post/7/comment/3`, no match | ✓ / ✗ |
 | `exurajs-watch` | `watch()` runs once when seen, a missing target only warns | ✓ / ✗ (scroll) |
+| `exurajs-mode` | `Exura.configure()`: development (default) — banner, module tracking, clash and missing-element warnings; production — a silent console, every error caught and handed to `onError` | ✓ / ✗ — ✗ on 1.1.0 (devneet-id/exurajs#3) |
 | `exurajs-modules` | two modules, one drives the other, a module without its element | ✓ / ✗ |
 | `exuraphp-routing` | methods, method lists, wildcards, whole-route match, `?/route`, 404 | ✓ / ✗ |
+| `exuraphp-mode` | `Exura::configure()`: development (default) — the trace with time, full errors; production — no trace, no paths, a 500 says only `Internal Server Error` (`api/` and `api/production/`) | ✓ / ✗ — ✗ on 1.1.0 (devneet-id/exuraphp#9) |
 | `exuraphp-request` | `method()` from query, JSON and form; `return`, `data`, `header`, the trace | ✓ / ✗ |
 | `exuraphp-errors` | exception, warning, undefined function → 500 JSON; a notice stays 200 | ✓ / ✗ |
 | `exuraphp-method-values` | every kind of value through `Exura::method()`: JSON types, query, form, multipart, PUT, merged sources, broken bodies | ✓ / ✗ — 6 ✗ on 1.1.0 |

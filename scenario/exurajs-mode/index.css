@@ -1,0 +1,14 @@
+/* scenario header — the same in every scenario */
+[scenario] { padding: 1.5rem 1.25rem 1rem; border-bottom: 1px solid rgba(142,147,166,.35); margin-bottom: 1.5rem; }
+[scenario] small { letter-spacing: .12em; text-transform: uppercase; opacity: .6; font-size: .72rem; }
+[scenario] h1 { font-size: 1.6rem; margin: .2rem 0 .4rem; }
+[scenario] p { margin: 0; opacity: .75; max-width: 46rem; }
+[expect] { list-style: none; padding: 0; margin: .75rem 0 0; font-size: .9rem; }
+[expect] li::before { content: "◇ "; opacity: .6; }
+[expect] li[ok]::before { content: "✓ "; color: #1f9d55; opacity: 1; }
+[expect] li[fail]::before { content: "✗ "; color: #d64545; opacity: 1; }
+[expect] li[fail] { color: #d64545; }
+main { padding: 0 1.25rem 3rem; }
+
+
+[log] pre { margin: 0 0 .75rem; padding: .75rem 1rem; font-size: .75rem; border: 1px solid rgba(142,147,166,.35); white-space: pre-wrap; }
